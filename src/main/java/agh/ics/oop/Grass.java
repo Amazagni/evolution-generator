@@ -9,5 +9,8 @@ public class Grass {
         return this.position;
 
     }
+    public String toString(){
+        return "*";
+    }
 
 }
