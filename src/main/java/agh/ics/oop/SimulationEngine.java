@@ -40,4 +40,12 @@ public class SimulationEngine {
         this.animals.add(animal);
         this.map.place(animal);
     }
+    private void generateRandomGrass(){
+        int maxX = this.map.getUpperRight().x;
+        int maxY = this.map.getUpperRight().y;
+        int newX = (int)(Math.random()*(maxX));
+        int newY = (int)(Math.random()*(maxY));
+
+
+    }
 }
