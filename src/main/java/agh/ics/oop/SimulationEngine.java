@@ -5,21 +5,27 @@ import java.util.*;
 public class SimulationEngine implements Runnable {
     private List<Animal> animals = new ArrayList<>();
     private int energyGain;       //będzie trzeba to przypisać w konstruktorze
-    private int dailyEnergyLoss;  // - || -
+    private int dailyEnergyLoss = 5;  // - || -
     private int startingNumberOfGrass = 10;// - || -
     private int dailyGrassGrowth = 8;// - || -
     private int startingEnergy = 50;   // - || -
+    private int energyUsedToCreateAnimal = 30; //- || - ilosc energi ktora rodzice łącznie tracą przy rozmnażaniu
+    private int minEnergyToStartReproduce = 25; // - || - min energia zeby zwierze moglo sie rozmnazac ps trzeba zmienić tą nazwe xd
     private int genLength = 10; //Nie pamiętam ile jak długa miała być ta tablica
-    //zmienne dotyczace wyboru mapy
-    //(trzeba dopisać w konstruktorze)
+    //zmienne dotyczace wyboru mapy     |
+    //(trzeba dopisać w konstruktorze)  V
     private Vector2d equatorLowerLeft;
     private Vector2d equatorUpperRight;
+    private boolean earth = true;
+    private boolean hellPortal = false;
     private boolean forestedEquators = true;
     private boolean toxicCorpses = false;
     private boolean randomMutation = true;
     private boolean slightlyChangedMutation = false;
     private boolean correctGenesOrder = true;
-    private boolean slightlyChangedGenesOrder = true;
+    private boolean slightlyChangedGenesOrder = false;
+    //                                   ʌ
+    //zmienne dotyczące wyboru mapy      |
     private EarthMap map;
 
     public SimulationEngine(EarthMap map, int startingNumberOfAnimals){
@@ -55,6 +61,8 @@ public class SimulationEngine implements Runnable {
         this.map.place(animal);
     }
 
+    //generowanie trawy tylko dla mapy z równikiemmm
+    //drugą trzeba bedzie dopisać
     private void generateRandomGrass(int n){
         //generowanie dla mapy z rownikiem
         if(forestedEquators){
@@ -89,6 +97,37 @@ public class SimulationEngine implements Runnable {
         }
 
     }
+    //obie wersje wyjscia zwierzęcia poza mapę
+    private void sendBackToBorder(Animal animal){
+        Vector2d position = animal.getPosition();
+        int newX = position.x;
+        int newY = position.y;
+        if(this.earth){
+            if(!position.follows(new Vector2d(0,0))){
+                if(position.x < 0){
+                    newX = this.map.getUpperRight().x;
+                }
+                if(position.y < 0){
+                    newY = this.map.getUpperRight().y;
+                }
+            }
+            if(!position.precedes(this.map.getUpperRight())){
+                if(position.x > this.map.getUpperRight().x){
+                    newX = 0;
+                }
+                if(position.y > this.map.getUpperRight().y){
+                    newY = 0;
+                }
+            }
+        }
+        if(this.hellPortal){
+            newX = (int)(Math.random()*(this.map.getUpperRight().x+1));
+            newY = (int)(Math.random()*(this.map.getUpperRight().y+1));
+            animal.updateEnergy(-dailyEnergyLoss);
+        }
+        animal.updatePosition(new Vector2d(newX,newY));
+    }
+    //obie wersje otrzymywania kolejnego genu
     private void updateGeneIndex(Animal animal){
         //jesli mamy ustawioną odpowiednia kolejnosc, index zmienia sie tylko o 1
         if(this.correctGenesOrder){
@@ -137,12 +176,18 @@ public class SimulationEngine implements Runnable {
                 animal.updateEnergy(-this.dailyEnergyLoss);
                 updateGeneIndex(animal);
                 updatedAnimals.add(animal);
-                this.map.place(animal);
+                if(!(newPosition.follows(new Vector2d(0,0))&&newPosition.precedes(this.map.getUpperRight()))){
+                    sendBackToBorder(animal);
+                }
+                animal.updateEnergy(-dailyEnergyLoss);
+                if(animal.getEnergy()>0){
+                    this.map.place(animal);
+                }
             }
             this.animals = updatedAnimals;
             generateRandomGrass(this.dailyGrassGrowth);
             try {
-                Thread.sleep(2000);
+                Thread.sleep(200);
             } catch (InterruptedException e) {
                 System.out.println("Przerwano symulacje: "+ e);
 
