@@ -1,7 +1,8 @@
 package agh.ics.oop;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Random;
-public class Animal {
+public class Animal implements Comparable<Animal> {
     private MapDirection direction;
     private ArrayList<Integer> genes;
     private int genIndex = 0;
@@ -23,8 +24,8 @@ public class Animal {
     public Vector2d getPosition(){
         return this.position;
     }
-    public void updateIndex(){
-        this.genIndex = (this.genIndex+1)%10; //dzielimy przez dlugosc genu, dalej nie pamietam ile to było
+    public void updateIndex(int  a){
+        this.genIndex = (this.genIndex + a)%10; //dzielimy przez dlugosc genu, dalej nie pamietam ile to było
     }
     public String toString(){
         return "A";
@@ -39,10 +40,16 @@ public class Animal {
     public void updatePosition(Vector2d position){
         this.position = position;
     }
+    public void updateEnergy(int energy){
+        this.energy += energy;
+    }
     public int getEnergy(){
         return this.energy;
     }
-    public void decreaseEnergy(int a){
-        this.energy -= a;
+
+
+    @Override
+    public int compareTo(Animal o) {
+        return this.energy - o.energy;
     }
 }

@@ -32,7 +32,6 @@ public class MapVisualizer {
      * @return String representation of the selected region of the map.
      */
     public String draw(Vector2d lowerLeft, Vector2d upperRight) {
-        System.out.println(map.returnAnimals());
         StringBuilder builder = new StringBuilder();
         for (int i = upperRight.y + 1; i >= lowerLeft.y - 1; i--) {
             if (i == upperRight.y + 1) {

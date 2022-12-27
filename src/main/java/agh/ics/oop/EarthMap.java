@@ -2,10 +2,7 @@ package agh.ics.oop;
 
 import com.sun.tools.jconsole.JConsoleContext;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Vector;
+import java.util.*;
 
 public class EarthMap implements IWorldMap {
     Vector2d lowerLeft = new Vector2d(0,0);
@@ -23,17 +20,22 @@ public class EarthMap implements IWorldMap {
 
     public void place(Animal animal){
         Vector2d position = animal.getPosition();
+        //tworze nowy array
+        ArrayList<Animal> tmp;
         if(this.animals.get(position) == null){
-            ArrayList<Animal> tmp = new ArrayList<Animal>();
-            this.animals.remove(position);
+            tmp = new ArrayList<Animal>();
             tmp.add(animal);
             this.animals.put(position,tmp);
         }
+        //dodaje do arraya
         else {
-            ArrayList<Animal> tmp = new ArrayList<Animal>(this.animals.get(position));
-            this.animals.remove(position);
+            tmp = new ArrayList<Animal>(this.animals.get(position));
             tmp.add(animal);
+            this.animals.remove(position);
+            //array zawsze utrzymuje posortowany po aktualnej energii;
+            tmp.sort(new AnimalEnergyComparator());
             this.animals.put(position,tmp);
+
         }
 //        System.out.println(position);
 //        System.out.println(isOccupied(position));
