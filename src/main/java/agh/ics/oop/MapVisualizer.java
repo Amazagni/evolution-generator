@@ -1,5 +1,7 @@
 package agh.ics.oop;
 
+import com.sun.tools.jconsole.JConsoleContext;
+
 /**
  * The map visualizer converts the {@link IWorldMap} map into a string
  * representation.
@@ -10,13 +12,13 @@ public class MapVisualizer {
     private static final String EMPTY_CELL = " ";
     private static final String FRAME_SEGMENT = "-";
     private static final String CELL_SEGMENT = "|";
-    private IWorldMap map;
+    private EarthMap map;
 
     /**
      * Initializes the MapVisualizer with an instance of map to visualize.
      * @param map
      */
-    public MapVisualizer(IWorldMap map) {
+    public MapVisualizer(EarthMap map) {
         this.map = map;
     }
 
@@ -30,6 +32,7 @@ public class MapVisualizer {
      * @return String representation of the selected region of the map.
      */
     public String draw(Vector2d lowerLeft, Vector2d upperRight) {
+        System.out.println(map.returnAnimals());
         StringBuilder builder = new StringBuilder();
         for (int i = upperRight.y + 1; i >= lowerLeft.y - 1; i--) {
             if (i == upperRight.y + 1) {
@@ -71,11 +74,20 @@ public class MapVisualizer {
 
     private String drawObject(Vector2d currentPosition) {
         String result = null;
+
         if (this.map.isOccupied(currentPosition)) {
             Object object = this.map.objectAt(currentPosition);
             if (object != null) {
-                result = object.toString();
+                //result = object.toString();
+                //zmieniam draw zeby rysowalo tez array zwierząt
+                if(object instanceof Grass){
+                    result = object.toString();
+                }
+                else {
+                    result = "A";
+                }
             } else {
+
                 result = EMPTY_CELL;
             }
         } else {

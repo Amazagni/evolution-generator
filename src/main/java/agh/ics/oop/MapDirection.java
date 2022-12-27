@@ -43,6 +43,7 @@ public enum MapDirection {
         }
     }
     public MapDirection toMapDirection(int id){
+        id = id%8;
         switch(id){
             case 0:
                 return NORTH;

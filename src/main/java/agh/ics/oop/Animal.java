@@ -15,12 +15,34 @@ public class Animal {
         //losowo generuje początkowy kierunek zwierzaka
         this.direction = MapDirection.NORTH.toMapDirection((int)(Math.random()*8));
     }
+
+    //zwraca gen ktorego teraz użyjemy;
+    public int getGen(){
+        return this.genes.get(genIndex);
+    }
     public Vector2d getPosition(){
         return this.position;
     }
+    public void updateIndex(){
+        this.genIndex = (this.genIndex+1)%10; //dzielimy przez dlugosc genu, dalej nie pamietam ile to było
+    }
     public String toString(){
-        return "";
+        return "A";
     }
 
-
+    public MapDirection getDirection() {
+        return direction;
+    }
+    public void updateDirection(MapDirection direction){
+        this.direction = direction;
+    }
+    public void updatePosition(Vector2d position){
+        this.position = position;
+    }
+    public int getEnergy(){
+        return this.energy;
+    }
+    public void decreaseEnergy(int a){
+        this.energy -= a;
+    }
 }
