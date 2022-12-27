@@ -53,6 +53,15 @@ public class EarthMap implements IWorldMap {
         this.clumpsOfGrass.put(position,new Grass(position));
 
     }
+    public boolean isGrassAt(Vector2d position){
+        if(this.clumpsOfGrass.get(position) == null){
+            return false;
+        }
+        return true;
+    }
+    public void deleteGrassAt(Vector2d position){
+        this.clumpsOfGrass.remove(position);
+    }
     public Vector2d getUpperRight(){
         return this.upperRight;
     }
@@ -68,8 +77,14 @@ public class EarthMap implements IWorldMap {
     public Map<Vector2d,ArrayList<Animal>> returnAnimals(){
         return animals;
     }
+
     public void updateAnimals(Map<Vector2d, ArrayList<Animal>> animals){
         this.animals = animals;
+    }
+
+    public void updateAnimalsAt(Vector2d position, ArrayList<Animal> animals){
+        this.animals.remove(position);
+        this.animals.put(position,animals);
     }
 //    public void plantTheGrass(){
 //

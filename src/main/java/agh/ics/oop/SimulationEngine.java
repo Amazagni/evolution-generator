@@ -4,10 +4,10 @@ import java.util.*;
 
 public class SimulationEngine implements Runnable {
     private List<Animal> animals = new ArrayList<>();
-    private int energyGain;       //będzie trzeba to przypisać w konstruktorze
+    private int grassEnergyGain = 15;//będzie trzeba to przypisać w konstruktorze
     private int dailyEnergyLoss = 5;  // - || -
     private int startingNumberOfGrass = 10;// - || -
-    private int dailyGrassGrowth = 8;// - || -
+    private int dailyGrassGrowth = 25;// - || -
     private int startingEnergy = 50;   // - || -
     private int energyUsedToCreateAnimal = 30; //- || - ilosc energi ktora rodzice łącznie tracą przy rozmnażaniu
     private int minEnergyToStartReproduce = 25; // - || - min energia zeby zwierze moglo sie rozmnazac ps trzeba zmienić tą nazwe xd
@@ -160,6 +160,8 @@ public class SimulationEngine implements Runnable {
 //            System.out.println(this.map.returnAnimals().get(new Vector2d(1,1)).get(0).getEnergy());
 //
             System.out.println(this.map);
+            System.out.print("Ilość zwierząt: ");
+            System.out.println(this.animals.size());
             List<Animal> updatedAnimals = new ArrayList<>();//nowe animals dla engina i na tego podstawie uzupelni sie animals w mapie
             int currGene;
             MapDirection newDirection;
@@ -175,19 +177,34 @@ public class SimulationEngine implements Runnable {
                 animal.updatePosition(newPosition);
                 animal.updateEnergy(-this.dailyEnergyLoss);
                 updateGeneIndex(animal);
-                updatedAnimals.add(animal);
+
                 if(!(newPosition.follows(new Vector2d(0,0))&&newPosition.precedes(this.map.getUpperRight()))){
                     sendBackToBorder(animal);
                 }
                 animal.updateEnergy(-dailyEnergyLoss);
+                animal.icrementAge();
                 if(animal.getEnergy()>0){
+                    updatedAnimals.add(animal);
                     this.map.place(animal);
                 }
             }
             this.animals = updatedAnimals;
+            //zjadanie trawy
+            for(Animal animal: animals){
+                if(this.map.isGrassAt(animal.getPosition())){
+                    ArrayList<Animal> list = (ArrayList<Animal>)this.map.objectAt(animal.getPosition());
+                    Animal updatedAnimal = list.get(0);
+                    updatedAnimal.updateEnergy(grassEnergyGain);
+                    list.set(0,updatedAnimal);
+                    this.map.updateAnimalsAt(animal.getPosition(),list);
+                    this.map.deleteGrassAt(animal.getPosition());
+
+                }
+            }
+
             generateRandomGrass(this.dailyGrassGrowth);
             try {
-                Thread.sleep(200);
+                Thread.sleep(1000);
             } catch (InterruptedException e) {
                 System.out.println("Przerwano symulacje: "+ e);
 

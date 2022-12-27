@@ -8,6 +8,9 @@ public class Animal implements Comparable<Animal> {
     private int genIndex = 0;
     private Vector2d position;
     private int energy;
+    private int age = 0; //ilosc dni które zwierze przeżyło
+    private int numberOfChildren = 0; // ilosc dzieci (age i numberOfChildren potrzebne do walki o trawe)
+
 
     public Animal(Vector2d startingPosition, ArrayList<Integer> genes,int energy){
         this.energy = energy;
@@ -46,7 +49,18 @@ public class Animal implements Comparable<Animal> {
     public int getEnergy(){
         return this.energy;
     }
-
+    public void icrementAge(){
+        this.age += 1;
+    }
+    public int getAge(){
+        return this.age;
+    }
+    public void icrementNumberOfChildren(){
+        this.numberOfChildren += 1;
+    }
+    public int getNumberOfChildren(){
+        return this.numberOfChildren;
+    }
 
     @Override
     public int compareTo(Animal o) {
