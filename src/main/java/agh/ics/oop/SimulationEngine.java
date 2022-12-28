@@ -7,8 +7,8 @@ public class SimulationEngine implements Runnable {
     private int grassEnergyGain = 40;//będzie trzeba to przypisać w konstruktorze
     private int dailyEnergyLoss = 5;  // - || -
     private int startingNumberOfGrass = 10;// - || -
-    private int dailyGrassGrowth = 12;// - || -
-    private int startingEnergy = 200;   // - || -
+    private int dailyGrassGrowth = 20;// - || -
+    private int startingEnergy = 120;//   // - || -
     private int energyUsedToCreateAnimal = 30; //- || - ilosc energi ktora rodzice łącznie tracą przy rozmnażaniu
     private int minEnergyToReproduce = 25; // - || - min energia zeby zwierze moglo sie rozmnazac ps trzeba zmienić tą nazwe xd
     private int genLength = 10; //Nie pamiętam ile jak długa miała być ta tablica
@@ -25,12 +25,13 @@ public class SimulationEngine implements Runnable {
     //(trzeba dopisać w konstruktorze)  V
     private Vector2d equatorLowerLeft;
     private Vector2d equatorUpperRight;
+    private ArrayList<ToxicCorpsesField> corpses;
     private boolean earth = true;
     private boolean hellPortal = false;
-    private boolean forestedEquators = true;
-    private boolean toxicCorpses = false;
-    private boolean randomMutation = false;
-    private boolean slightlyChangedMutation = true;
+    private boolean forestedEquators = false;
+    private boolean toxicCorpses = true;
+    private boolean randomMutation = true;
+    private boolean slightlyChangedMutation = false;
     private boolean correctGenesOrder = true;
     private boolean slightlyChangedGenesOrder = false;
     //                                   ʌ
@@ -44,13 +45,20 @@ public class SimulationEngine implements Runnable {
         }
         //jeżeli jest to mapa z rownikiem, to tworzymy nowe lowerLeft i upperRight
         //około 20% mapy to rownik (jak w poleceniu)
-        if(forestedEquators){
+        if(this.forestedEquators){
             Vector2d upperRight = this.map.getUpperRight();
             this.equatorLowerLeft = new Vector2d(0,(int)(0.4 * upperRight.y));
             this.equatorUpperRight = new Vector2d(upperRight.x, (int)(0.6* upperRight.y));
-            generateRandomGrass(startingNumberOfGrass);
         }
-
+        if(this.toxicCorpses){
+            this.corpses = new ArrayList<>();
+            for(int i = 0; i <= this.map.getUpperRight().x; i++){
+                for(int j = 0; j <= this.map.getUpperRight().y; j++){
+                    this.corpses.add(new ToxicCorpsesField(new Vector2d(i,j)));
+                }
+            }
+        }
+        generateRandomGrass(startingNumberOfGrass);
     }
     private void generateRandomAnimal(){
         int maxX = this.map.getUpperRight().x;
@@ -74,7 +82,7 @@ public class SimulationEngine implements Runnable {
     //drugą trzeba bedzie dopisać
     private void generateRandomGrass(int n){
         //generowanie dla mapy z rownikiem
-        if(forestedEquators){
+        if(this.forestedEquators){
             int grassOnEquator = (int)(0.8*n);
             //generuje trawe na rowniku
             for(int i = 0; i < grassOnEquator; i++){
@@ -98,13 +106,31 @@ public class SimulationEngine implements Runnable {
                     newY = (int)(Math.random()*(this.map.getUpperRight().y - this.equatorUpperRight.y + 1))+this.equatorUpperRight.y;
                 }
                 Vector2d newPosition = new Vector2d(newX,newY);
-                if(!map.isOccupied(newPosition)){
-                    map.placeGrass(newPosition);
+                if(!this.map.isOccupied(newPosition)){
+                    this.map.placeGrass(newPosition);
                 }
 
             }
         }
-
+        if(this.toxicCorpses){
+            //corpses to tablica posortowana po ilosci trupow (rosnąco)
+            //"lepsza część" to pierwsze 20% elementów tej tablicy
+            int grassOnBetterFields = (int)(0.8 * n);
+            int betterFields = (int)(0.2 * this.corpses.size());
+            this.corpses.sort(new ToxicCorpsesComparator());
+            for(int i = 0; i < grassOnBetterFields; i++){
+                int betterFieldId = (int)(Math.random()*(betterFields));
+                if(!this.map.isOccupied(this.corpses.get(betterFieldId).getPosition())){
+                    this.map.placeGrass(this.corpses.get(betterFieldId).getPosition());
+                }
+            }
+            for(int i = grassOnBetterFields; i < n; i++){
+                int worseFieldId = (int)(Math.random()*(this.corpses.size()-betterFields)+betterFields);
+                if(!this.map.isOccupied(this.corpses.get(worseFieldId).getPosition())){
+                    this.map.placeGrass(this.corpses.get(worseFieldId).getPosition());
+                }
+            }
+        }
     }
     //obie wersje wyjscia zwierzęcia poza mapę
     private void sendBackToBorder(Animal animal){
@@ -162,7 +188,7 @@ public class SimulationEngine implements Runnable {
             int tmpGene = firstParent.getGenAt(j);
             if(Math.random()<0.5){
                 //mutujemy gen
-                if(this.slightlyChangedGenesOrder){
+                if(this.slightlyChangedMutation){
                     if(Math.random()<0.5){
                         tmpGene = (tmpGene+1)%8;
                     }
@@ -181,7 +207,7 @@ public class SimulationEngine implements Runnable {
             int tmpGene = secondParent.getGenAt(j);
             if(Math.random()<0.5){
                 //mutujemy gen
-                if(this.slightlyChangedGenesOrder){
+                if(this.slightlyChangedMutation){
                     if(Math.random()<0.5){
                         tmpGene = (tmpGene+1)%8;
                     }
@@ -233,6 +259,8 @@ public class SimulationEngine implements Runnable {
 
             //czyscimy animals z mapy
             this.map.updateAnimals(new HashMap<>());
+
+            //każde zwierze sie porusza
             for (Animal animal : this.animals) {
                 currGene = animal.getGen();
                 newDirection = animal.getDirection().changeDirection(currGene);
@@ -251,17 +279,22 @@ public class SimulationEngine implements Runnable {
                     updatedAnimals.add(animal);
                     this.map.place(animal);
                 }
+                //zwierze umiera
                 else{
+                    for(int i = 0; i < this.corpses.size(); i++){
+                        if(this.corpses.get(i).getPosition().equals(newPosition)){
+                            ToxicCorpsesField tmp = corpses.get(i);
+                            tmp.icrementCorpses();
+                            this.corpses.set(i,tmp);
+                            break;
+
+                        }
+                    }
                     this.deadToday += 1;
                 }
 
             }
             this.animals = updatedAnimals;
-//            public void deleteThisFunction(){
-//                this.animals.forEach((position,animalList)->{
-//                    System.out.println(animalList);
-//                });
-//            }
 
             Map<Vector2d, ArrayList<Animal>> mapAniamls = this.map.getAnimals();
             mapAniamls.forEach((position,animalList)->{
@@ -290,10 +323,14 @@ public class SimulationEngine implements Runnable {
                         //zmniejszamy energie rodzicow;
                         int firstParentEnergyLoss = (int)(this.energyUsedToCreateAnimal *
                                 (firstParent.getEnergy()/(double)(firstParent.getEnergy()+secondParent.getEnergy())));
+                        firstParent.updateEnergy(-firstParentEnergyLoss);
+                        secondParent.updateEnergy(-(this.energyUsedToCreateAnimal - firstParentEnergyLoss));
+
+                        //dodajemy nowe zwierze
                         Animal child = new Animal(position,childGenes,this.energyUsedToCreateAnimal);
                         animalList.add(child);
                         this.animals.add(child);
-                    }
+                        }
 
                 }
             });
