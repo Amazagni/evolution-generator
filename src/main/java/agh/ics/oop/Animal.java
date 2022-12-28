@@ -27,6 +27,11 @@ public class Animal implements Comparable<Animal> {
     public ArrayList<Integer> getGenes(){
         return this.genes;
     }
+
+    public int getGenIndex() {
+        return this.genIndex;
+    }
+
     public int getGenAt(int a){
         return this.genes.get(a);
     }
@@ -71,5 +76,54 @@ public class Animal implements Comparable<Animal> {
     @Override
     public int compareTo(Animal o) {
         return this.energy - o.energy;
+    }
+
+    //W przypadku poza mape wysyła zwierze z powrotem w odpowiednie miejsce
+    public void sendBackToBorder( EarthMap map, boolean earth, boolean hellPortal, int dailyEnergyLoss){
+        Vector2d position = this.getPosition();
+        int newX = position.x;
+        int newY = position.y;
+        if(earth){
+            if(!position.follows(new Vector2d(0,0))){
+                if(position.x < 0){
+                    newX = map.getUpperRight().x;
+                }
+                if(position.y < 0){
+                    newY = map.getUpperRight().y;
+                }
+            }
+            if(!position.precedes(map.getUpperRight())){
+                if(position.x > map.getUpperRight().x){
+                    newX = 0;
+                }
+                if(position.y > map.getUpperRight().y){
+                    newY = 0;
+                }
+            }
+        }
+        if(hellPortal){
+            newX = (int)(Math.random()*(map.getUpperRight().x+1));
+            newY = (int)(Math.random()*(map.getUpperRight().y+1));
+            this.updateEnergy(-dailyEnergyLoss);
+        }
+        this.updatePosition(new Vector2d(newX,newY));
+    }
+    //ustalamy indeks genu z którego skorzysta nastepnie zwierze, (kolejnosc poprawna inkrementuje indeks
+    //drugi wariant w 20% przypadkow zmienia indeks na losowy)
+    public void updateGeneIndex(boolean correctGenesOrder, boolean slightlyChangedGenesOrder){
+        //jesli mamy ustawioną odpowiednia kolejnosc, index zmienia sie tylko o 1
+        if(correctGenesOrder){
+            this.updateIndex(1);
+        }
+        // w przeciwnym przypadku sprawdzamy czy wylosowalismy zmiane kolejnosci, czy może jednak wciaz mieniamy indeks o 1
+        if(slightlyChangedGenesOrder){
+            int randomPercent = (int)(Math.random()*10); //wartosci 0,1,...,9
+            if(randomPercent <= 1) {
+                this.updateIndex((int) (Math.random() * (10 + 1))); // ZAMIAST 10 WPISAC DLUGOSC GENUUU!!!!!
+            }
+            else{
+                this.updateIndex(1);
+            }
+        }
     }
 }

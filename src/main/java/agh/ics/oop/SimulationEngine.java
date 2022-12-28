@@ -26,8 +26,8 @@ public class SimulationEngine implements Runnable {
     private Vector2d equatorLowerLeft;
     private Vector2d equatorUpperRight;
     private ArrayList<ToxicCorpsesField> corpses;
-    private boolean earth = true;
-    private boolean hellPortal = false;
+    private boolean earth = false;
+    private boolean hellPortal = true;
     private boolean forestedEquators = true;
     private boolean toxicCorpses = false;
     private boolean randomMutation = true;
@@ -132,53 +132,7 @@ public class SimulationEngine implements Runnable {
             }
         }
     }
-    //obie wersje wyjscia zwierzęcia poza mapę
-    private void sendBackToBorder(Animal animal){
-        Vector2d position = animal.getPosition();
-        int newX = position.x;
-        int newY = position.y;
-        if(this.earth){
-            if(!position.follows(new Vector2d(0,0))){
-                if(position.x < 0){
-                    newX = this.map.getUpperRight().x;
-                }
-                if(position.y < 0){
-                    newY = this.map.getUpperRight().y;
-                }
-            }
-            if(!position.precedes(this.map.getUpperRight())){
-                if(position.x > this.map.getUpperRight().x){
-                    newX = 0;
-                }
-                if(position.y > this.map.getUpperRight().y){
-                    newY = 0;
-                }
-            }
-        }
-        if(this.hellPortal){
-            newX = (int)(Math.random()*(this.map.getUpperRight().x+1));
-            newY = (int)(Math.random()*(this.map.getUpperRight().y+1));
-            animal.updateEnergy(-dailyEnergyLoss);
-        }
-        animal.updatePosition(new Vector2d(newX,newY));
-    }
-    //obie wersje otrzymywania kolejnego genu
-    private void updateGeneIndex(Animal animal){
-        //jesli mamy ustawioną odpowiednia kolejnosc, index zmienia sie tylko o 1
-        if(this.correctGenesOrder){
-            animal.updateIndex(1);
-        }
-        // w przeciwnym przypadku sprawdzamy czy wylosowalismy zmiane kolejnosci, czy może jednak wciaz mieniamy indeks o 1
-        if(this.slightlyChangedGenesOrder){
-            int randomPercent = (int)(Math.random()*10); //wartosci 0,1,...,9
-            if(randomPercent <= 1) {
-                animal.updateIndex((int) (Math.random() * (genLength + 1)));
-            }
-            else{
-                animal.updateIndex(1);
-            }
-        }
-    }
+
     private ArrayList<Integer> CreateChildGenes(Animal firstParent, Animal secondParent){
         int genesFromFirstParent = (int)(this.genLength *
                 (firstParent.getEnergy()/(double)(firstParent.getEnergy()+secondParent.getEnergy())));
@@ -268,10 +222,13 @@ public class SimulationEngine implements Runnable {
                 newPosition = animal.getPosition().add(newDirection.toUnitVector());
                 animal.updatePosition(newPosition);
                 animal.updateEnergy(-this.dailyEnergyLoss);
-                updateGeneIndex(animal);
+                animal.updateGeneIndex(this.correctGenesOrder,this.slightlyChangedGenesOrder);
+                //updateGeneIndex(animal);
 
+                //jesli zwierze wyszło poza granice mapy wysylamy je w odpowiednie miejsce
                 if(!(newPosition.follows(new Vector2d(0,0))&&newPosition.precedes(this.map.getUpperRight()))){
-                    sendBackToBorder(animal);
+                    //sendBackToBorder(animal);
+                    animal.sendBackToBorder(this.map,this.earth,this.hellPortal,this.energyUsedToCreateAnimal);
                 }
                 animal.updateEnergy(-dailyEnergyLoss);
                 animal.icrementAge();
@@ -349,3 +306,52 @@ public class SimulationEngine implements Runnable {
 
     }
 }
+//obie wersje wyjscia zwierzęcia poza mapę
+//FUNKCJA PRZEROBIONA NA METODE W ANIMAL!!!
+//    private void sendBackToBorder(Animal animal){
+//        Vector2d position = animal.getPosition();
+//        int newX = position.x;
+//        int newY = position.y;
+//        if(this.earth){
+//            if(!position.follows(new Vector2d(0,0))){
+//                if(position.x < 0){
+//                    newX = this.map.getUpperRight().x;
+//                }
+//                if(position.y < 0){
+//                    newY = this.map.getUpperRight().y;
+//                }
+//            }
+//            if(!position.precedes(this.map.getUpperRight())){
+//                if(position.x > this.map.getUpperRight().x){
+//                    newX = 0;
+//                }
+//                if(position.y > this.map.getUpperRight().y){
+//                    newY = 0;
+//                }
+//            }
+//        }
+//        if(this.hellPortal){
+//            newX = (int)(Math.random()*(this.map.getUpperRight().x+1));
+//            newY = (int)(Math.random()*(this.map.getUpperRight().y+1));
+//            animal.updateEnergy(-this.energyUsedToCreateAnimal);
+//        }
+//        animal.updatePosition(new Vector2d(newX,newY));
+//    }
+//obie wersje otrzymywania kolejnego genu
+//FUNKCJA PRZEROBIONA NA METODE W ANIMAL!!!
+//    private void updateGeneIndex(Animal animal){
+//        //jesli mamy ustawioną odpowiednia kolejnosc, index zmienia sie tylko o 1
+//        if(this.correctGenesOrder){
+//            animal.updateIndex(1);
+//        }
+//        // w przeciwnym przypadku sprawdzamy czy wylosowalismy zmiane kolejnosci, czy może jednak wciaz mieniamy indeks o 1
+//        if(this.slightlyChangedGenesOrder){
+//            int randomPercent = (int)(Math.random()*10); //wartosci 0,1,...,9
+//            if(randomPercent <= 1) {
+//                animal.updateIndex((int) (Math.random() * (genLength + 1)));
+//            }
+//            else{
+//                animal.updateIndex(1);
+//            }
+//        }
+//    }
