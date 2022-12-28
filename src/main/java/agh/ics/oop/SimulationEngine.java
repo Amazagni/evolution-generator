@@ -28,8 +28,8 @@ public class SimulationEngine implements Runnable {
     private ArrayList<ToxicCorpsesField> corpses;
     private boolean earth = true;
     private boolean hellPortal = false;
-    private boolean forestedEquators = false;
-    private boolean toxicCorpses = true;
+    private boolean forestedEquators = true;
+    private boolean toxicCorpses = false;
     private boolean randomMutation = true;
     private boolean slightlyChangedMutation = false;
     private boolean correctGenesOrder = true;
@@ -281,13 +281,15 @@ public class SimulationEngine implements Runnable {
                 }
                 //zwierze umiera
                 else{
-                    for(int i = 0; i < this.corpses.size(); i++){
-                        if(this.corpses.get(i).getPosition().equals(newPosition)){
-                            ToxicCorpsesField tmp = corpses.get(i);
-                            tmp.icrementCorpses();
-                            this.corpses.set(i,tmp);
-                            break;
+                    if(this.toxicCorpses){
+                        for(int i = 0; i < this.corpses.size(); i++){
+                            if(this.corpses.get(i).getPosition().equals(newPosition)){
+                                ToxicCorpsesField tmp = corpses.get(i);
+                                tmp.icrementCorpses();
+                                this.corpses.set(i,tmp);
+                                break;
 
+                            }
                         }
                     }
                     this.deadToday += 1;
@@ -337,7 +339,7 @@ public class SimulationEngine implements Runnable {
             this.bornToday = this.animals.size() + this.deadToday - this.bornToday;
             generateRandomGrass(this.dailyGrassGrowth);
             try {
-                Thread.sleep(400);
+                Thread.sleep(100);
             } catch (InterruptedException e) {
                 System.out.println("Przerwano symulacje: "+ e);
 
