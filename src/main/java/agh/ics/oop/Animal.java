@@ -24,6 +24,12 @@ public class Animal implements Comparable<Animal> {
     public int getGen(){
         return this.genes.get(genIndex);
     }
+    public ArrayList<Integer> getGenes(){
+        return this.genes;
+    }
+    public int getGenAt(int a){
+        return this.genes.get(a);
+    }
     public Vector2d getPosition(){
         return this.position;
     }

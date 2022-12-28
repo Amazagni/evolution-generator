@@ -4,14 +4,23 @@ import java.util.*;
 
 public class SimulationEngine implements Runnable {
     private List<Animal> animals = new ArrayList<>();
-    private int grassEnergyGain = 25;//będzie trzeba to przypisać w konstruktorze
+    private int grassEnergyGain = 40;//będzie trzeba to przypisać w konstruktorze
     private int dailyEnergyLoss = 5;  // - || -
     private int startingNumberOfGrass = 10;// - || -
     private int dailyGrassGrowth = 12;// - || -
-    private int startingEnergy = 90;   // - || -
+    private int startingEnergy = 200;   // - || -
     private int energyUsedToCreateAnimal = 30; //- || - ilosc energi ktora rodzice łącznie tracą przy rozmnażaniu
-    private int minEnergyToStartReproduce = 25; // - || - min energia zeby zwierze moglo sie rozmnazac ps trzeba zmienić tą nazwe xd
+    private int minEnergyToReproduce = 25; // - || - min energia zeby zwierze moglo sie rozmnazac ps trzeba zmienić tą nazwe xd
     private int genLength = 10; //Nie pamiętam ile jak długa miała być ta tablica
+
+    // Do statystyk
+    private int day = 0;
+    private int totalDead = 0;
+    private int deadToday = 0;
+    private int totalBorn = 0;
+    private int bornToday = 0;
+
+
     //zmienne dotyczace wyboru mapy     |
     //(trzeba dopisać w konstruktorze)  V
     private Vector2d equatorLowerLeft;
@@ -20,8 +29,8 @@ public class SimulationEngine implements Runnable {
     private boolean hellPortal = false;
     private boolean forestedEquators = true;
     private boolean toxicCorpses = false;
-    private boolean randomMutation = true;
-    private boolean slightlyChangedMutation = false;
+    private boolean randomMutation = false;
+    private boolean slightlyChangedMutation = true;
     private boolean correctGenesOrder = true;
     private boolean slightlyChangedGenesOrder = false;
     //                                   ʌ
@@ -143,25 +152,78 @@ public class SimulationEngine implements Runnable {
                 animal.updateIndex(1);
             }
         }
+    }
+    private ArrayList<Integer> CreateChildGenes(Animal firstParent, Animal secondParent){
+        int genesFromFirstParent = (int)(this.genLength *
+                (firstParent.getEnergy()/(double)(firstParent.getEnergy()+secondParent.getEnergy())));
 
+        ArrayList<Integer> childGenes = new ArrayList<>();
+        for(int j = 0; j < genesFromFirstParent; j++){
+            int tmpGene = firstParent.getGenAt(j);
+            if(Math.random()<0.5){
+                //mutujemy gen
+                if(this.slightlyChangedGenesOrder){
+                    if(Math.random()<0.5){
+                        tmpGene = (tmpGene+1)%8;
+                    }
+                    else{
+                        tmpGene -= 1;
+                        if(tmpGene < 0)tmpGene = 7;
+                    }
+                }
+                if(this.randomMutation){
+                    tmpGene = (int)(Math.random()*8);
+                }
+            }
+            childGenes.add(tmpGene);
+        }
+        for(int j = genesFromFirstParent; j < this.genLength; j++){
+            int tmpGene = secondParent.getGenAt(j);
+            if(Math.random()<0.5){
+                //mutujemy gen
+                if(this.slightlyChangedGenesOrder){
+                    if(Math.random()<0.5){
+                        tmpGene = (tmpGene+1)%8;
+                    }
+                    else{
+                        tmpGene -= 1;
+                        if(tmpGene < 0)tmpGene = 7;
+                    }
+                }
+                if(this.randomMutation){
+                    tmpGene = (int)(Math.random()*8);
+                }
+            }
+            childGenes.add(tmpGene);
+        }
+        return childGenes;
     }
 
     @Override
     public void run() {
 
         while(true) {
-            //testy dla wielu zwierzat na jednym polu
-//            Animal animal1 = new Animal(new Vector2d(1,1),new ArrayList<>(),3);
-//            Animal animal2 = new Animal(new Vector2d(1,1),new ArrayList<>(),4);
-//            Animal animal3 = new Animal(new Vector2d(1,1),new ArrayList<>(),1);
-//            this.map.place(animal1);
-//            this.map.place(animal2);
-//            this.map.place(animal3);
-//            System.out.println(this.map.returnAnimals().get(new Vector2d(1,1)).get(0).getEnergy());
-//
+            this.totalBorn += this.bornToday;
+            this.totalDead += this.deadToday;
+
             System.out.println(this.map);
-            System.out.print("Ilość zwierząt: ");
+            System.out.print("Dzień: ");
+            System.out.println(day);
+            System.out.print("Ilość żywych zwierząt: ");
             System.out.println(this.animals.size());
+            System.out.print("Ilość urodzonych zwierząt: ");
+            System.out.println(this.totalBorn);
+            System.out.print("Dziś: ");
+            System.out.println(this.bornToday);
+            System.out.print("Ilość zmarłych zwierząt: ");
+            System.out.println(this.totalDead);
+            System.out.print("Dziś: ");
+            System.out.println(this.deadToday);
+
+            this.bornToday = this.animals.size();
+            this.day += 1;
+            this.deadToday = 0;
+
 
             List<Animal> updatedAnimals = new ArrayList<>();//nowe animals dla engina i na tego podstawie uzupelni sie animals w mapie
             //List<Vector2d> positions = new ArrayList<>();// lista pozycji okupowanych przez zwierzęta
@@ -185,10 +247,14 @@ public class SimulationEngine implements Runnable {
                 }
                 animal.updateEnergy(-dailyEnergyLoss);
                 animal.icrementAge();
-                if(animal.getEnergy()>0){
+                if(animal.getEnergy()>=0){
                     updatedAnimals.add(animal);
                     this.map.place(animal);
                 }
+                else{
+                    this.deadToday += 1;
+                }
+
             }
             this.animals = updatedAnimals;
 //            public void deleteThisFunction(){
@@ -196,39 +262,50 @@ public class SimulationEngine implements Runnable {
 //                    System.out.println(animalList);
 //                });
 //            }
-            //zjadanie trawy
+
             Map<Vector2d, ArrayList<Animal>> mapAniamls = this.map.getAnimals();
             mapAniamls.forEach((position,animalList)->{
+                //zjadanie trawy
                 if(this.map.isGrassAt(position)){
                     Animal updatedAnimal = animalList.get(0);
                     updatedAnimal.updateEnergy(grassEnergyGain);
                     animalList.set(0,updatedAnimal);
                     //this.map.updateAnimalsAt(position,animalList);
                     this.map.deleteGrassAt(position);
-                    System.out.print("Zjadło");
-                    System.out.println(position);
+                }
+                //rozmnażanie
+                int animalsOnPosition = animalList.size();
+                if(animalsOnPosition>=2){
+                    for(int i = 0 ; i < animalsOnPosition -1; i+=2){
+                        Animal firstParent = animalList.get(i);
+                        Animal secondParent = animalList.get(i+1);
+                        if(secondParent.getEnergy()<this.minEnergyToReproduce)break;
+                        //50% szans na to że potomek dziedziczy lewą część od rodzica z wiekszą ilośćią energii
+                        if(Math.random()<0.5){
+                            firstParent = animalList.get(i+1);
+                            secondParent = animalList.get(i);
+                        }
+                        ArrayList<Integer> childGenes = this.CreateChildGenes(firstParent,secondParent);
+
+                        //zmniejszamy energie rodzicow;
+                        int firstParentEnergyLoss = (int)(this.energyUsedToCreateAnimal *
+                                (firstParent.getEnergy()/(double)(firstParent.getEnergy()+secondParent.getEnergy())));
+                        Animal child = new Animal(position,childGenes,this.energyUsedToCreateAnimal);
+                        animalList.add(child);
+                        this.animals.add(child);
+                    }
+
                 }
             });
-//            for(Animal animal: animals){
-//                if(this.map.isGrassAt(animal.getPosition())){
-//                    ArrayList<Animal> list = (ArrayList<Animal>)this.map.objectAt(animal.getPosition());
-//                    Animal updatedAnimal = list.get(0);
-//                    updatedAnimal.updateEnergy(grassEnergyGain);
-//                    list.set(0,updatedAnimal);
-//                    this.map.updateAnimalsAt(animal.getPosition(),list);
-//                    this.map.deleteGrassAt(animal.getPosition());
-//
-//                }
-//            }
-
+            this.bornToday = this.animals.size() + this.deadToday - this.bornToday;
             generateRandomGrass(this.dailyGrassGrowth);
             try {
-                Thread.sleep(1000);
+                Thread.sleep(400);
             } catch (InterruptedException e) {
                 System.out.println("Przerwano symulacje: "+ e);
 
-            }
 
+            }
         }
 
     }

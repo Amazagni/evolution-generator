@@ -6,5 +6,6 @@ public class World {
         SimulationEngine engine = new SimulationEngine(map,30);
         engine.run();
 
+
     }
 }
