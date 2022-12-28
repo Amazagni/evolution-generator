@@ -72,8 +72,8 @@ public class EarthMap implements IWorldMap {
     public boolean isOccupied(Vector2d position){
         if(this.animals.get(position) != null || this.clumpsOfGrass.get(position)!= null)return true;
         return false;
-
     }
+
     public Map<Vector2d,ArrayList<Animal>> returnAnimals(){
         return animals;
     }
@@ -86,7 +86,11 @@ public class EarthMap implements IWorldMap {
         this.animals.remove(position);
         this.animals.put(position,animals);
     }
-//    public void plantTheGrass(){
+
+    public Map<Vector2d, ArrayList<Animal>> getAnimals() {
+        return animals;
+    }
+    //    public void plantTheGrass(){
 //
 //    }
 }

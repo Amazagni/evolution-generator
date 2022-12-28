@@ -4,11 +4,11 @@ import java.util.*;
 
 public class SimulationEngine implements Runnable {
     private List<Animal> animals = new ArrayList<>();
-    private int grassEnergyGain = 15;//będzie trzeba to przypisać w konstruktorze
+    private int grassEnergyGain = 25;//będzie trzeba to przypisać w konstruktorze
     private int dailyEnergyLoss = 5;  // - || -
     private int startingNumberOfGrass = 10;// - || -
-    private int dailyGrassGrowth = 25;// - || -
-    private int startingEnergy = 50;   // - || -
+    private int dailyGrassGrowth = 12;// - || -
+    private int startingEnergy = 90;   // - || -
     private int energyUsedToCreateAnimal = 30; //- || - ilosc energi ktora rodzice łącznie tracą przy rozmnażaniu
     private int minEnergyToStartReproduce = 25; // - || - min energia zeby zwierze moglo sie rozmnazac ps trzeba zmienić tą nazwe xd
     private int genLength = 10; //Nie pamiętam ile jak długa miała być ta tablica
@@ -162,7 +162,9 @@ public class SimulationEngine implements Runnable {
             System.out.println(this.map);
             System.out.print("Ilość zwierząt: ");
             System.out.println(this.animals.size());
+
             List<Animal> updatedAnimals = new ArrayList<>();//nowe animals dla engina i na tego podstawie uzupelni sie animals w mapie
+            //List<Vector2d> positions = new ArrayList<>();// lista pozycji okupowanych przez zwierzęta
             int currGene;
             MapDirection newDirection;
             Vector2d newPosition;
@@ -189,18 +191,35 @@ public class SimulationEngine implements Runnable {
                 }
             }
             this.animals = updatedAnimals;
+//            public void deleteThisFunction(){
+//                this.animals.forEach((position,animalList)->{
+//                    System.out.println(animalList);
+//                });
+//            }
             //zjadanie trawy
-            for(Animal animal: animals){
-                if(this.map.isGrassAt(animal.getPosition())){
-                    ArrayList<Animal> list = (ArrayList<Animal>)this.map.objectAt(animal.getPosition());
-                    Animal updatedAnimal = list.get(0);
+            Map<Vector2d, ArrayList<Animal>> mapAniamls = this.map.getAnimals();
+            mapAniamls.forEach((position,animalList)->{
+                if(this.map.isGrassAt(position)){
+                    Animal updatedAnimal = animalList.get(0);
                     updatedAnimal.updateEnergy(grassEnergyGain);
-                    list.set(0,updatedAnimal);
-                    this.map.updateAnimalsAt(animal.getPosition(),list);
-                    this.map.deleteGrassAt(animal.getPosition());
-
+                    animalList.set(0,updatedAnimal);
+                    //this.map.updateAnimalsAt(position,animalList);
+                    this.map.deleteGrassAt(position);
+                    System.out.print("Zjadło");
+                    System.out.println(position);
                 }
-            }
+            });
+//            for(Animal animal: animals){
+//                if(this.map.isGrassAt(animal.getPosition())){
+//                    ArrayList<Animal> list = (ArrayList<Animal>)this.map.objectAt(animal.getPosition());
+//                    Animal updatedAnimal = list.get(0);
+//                    updatedAnimal.updateEnergy(grassEnergyGain);
+//                    list.set(0,updatedAnimal);
+//                    this.map.updateAnimalsAt(animal.getPosition(),list);
+//                    this.map.deleteGrassAt(animal.getPosition());
+//
+//                }
+//            }
 
             generateRandomGrass(this.dailyGrassGrowth);
             try {
