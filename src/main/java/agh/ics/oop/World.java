@@ -5,7 +5,5 @@ public class World {
         EarthMap map = new EarthMap(new Vector2d(15,15));
         SimulationEngine engine = new SimulationEngine(map,30);//30
         engine.run();
-
-
     }
 }
