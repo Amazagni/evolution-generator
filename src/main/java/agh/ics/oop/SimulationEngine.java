@@ -28,7 +28,7 @@ public class SimulationEngine implements Runnable {
     private ArrayList<ToxicCorpsesField> corpses;
     private boolean earth = false;
     private boolean hellPortal = true;
-    private boolean forestedEquators = true;
+    public boolean forestedEquators = true;
     private boolean toxicCorpses = false;
     private boolean randomMutation = true;
     private boolean slightlyChangedMutation = false;
@@ -60,6 +60,24 @@ public class SimulationEngine implements Runnable {
         }
         generateRandomGrass(startingNumberOfGrass);
     }
+
+    public Vector2d[] getEquatorCords() {
+        if(this.forestedEquators) {
+            Vector2d[] cords = new Vector2d[2];
+            cords[0] = this.equatorLowerLeft;
+            cords[1] = this.equatorUpperRight;
+            return cords;
+        }
+        return null;
+    }
+
+    public boolean isForestTile(Vector2d position) {
+        if (this.forestedEquators) {
+            if(position.follows(this.equatorLowerLeft) && position.precedes(this.equatorUpperRight)) return true;
+        }
+        return false;
+    }
+
     private void generateRandomAnimal(){
         int maxX = this.map.getUpperRight().x;
         int maxY = this.map.getUpperRight().y;
