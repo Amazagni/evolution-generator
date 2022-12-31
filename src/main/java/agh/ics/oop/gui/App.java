@@ -9,6 +9,7 @@ import javafx.geometry.HPos;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 
 import javafx.scene.layout.*;
@@ -48,14 +49,30 @@ public class App extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+
+//        LABELS
+        Label mapWidthLabel = new Label("Map width: ");
+        Label mapHeightLabel = new Label("Map height: ");
+//        TEXT FIELDS
+        TextField mapWidth = new TextField("15");
+        TextField mapHeight = new TextField("15");
+        mapWidth.setMaxWidth(60);
+        mapHeight.setMaxWidth(60);
+        HBox mapWidthBox = new HBox(mapWidthLabel, mapWidth);
+        HBox mapHeightBox = new HBox(mapHeightLabel, mapHeight);
+        VBox settings = new VBox(mapWidthBox, mapHeightBox);
+
         VBox mapBox = new VBox(this.mapGridPane);
         mapBox.setAlignment(Pos.CENTER);
-        Scene scene = new Scene(mapBox, 1280, 960);
+        VBox test = new VBox(mapBox, settings);
+
+        Scene scene = new Scene(test, 1280, 960);
         primaryStage.setScene(scene);
         primaryStage.show();
         this.map = new EarthMap(new Vector2d(15, 15));
         this.engine = new SimulationEngine(this.map, 10);
-        this.engine.run();
-        runSimulation(map, mapGridPane);
+        Thread engineThread = new Thread(this.engine);
+        engineThread.start();
+        runSimulation(this.map, this.mapGridPane);
     }
 }
