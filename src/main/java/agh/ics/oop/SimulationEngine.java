@@ -11,7 +11,7 @@ public class SimulationEngine implements Runnable {
     private int startingEnergy = 120;//   // - || -
     private int energyUsedToCreateAnimal = 30; //- || - ilosc energi ktora rodzice łącznie tracą przy rozmnażaniu
     private int minEnergyToReproduce = 25; // - || - min energia zeby zwierze moglo sie rozmnazac ps trzeba zmienić tą nazwe xd
-    private int genLength = 10; //Nie pamiętam ile jak długa miała być ta tablica
+    private int genLength = 10; //Nie pamiętam ile jak długa miała być ta tablica -- to ma być parametr wejściowy
 
     // Do statystyk
     private int day = 0;
