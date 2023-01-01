@@ -49,15 +49,27 @@ public class SimulationEngine implements Runnable {
             int minNumberOfMutations, int maxNumberOfMutations){
         this.map = map;
         this.startingNumberOfGrass = startingNumberOfGrass;
+        if(this.startingNumberOfGrass < 0) this.startingNumberOfGrass = 0;
         this.dailyGrassGrowth = dailyGrassGrowth;
+        if(this.dailyGrassGrowth < 0) this.dailyGrassGrowth = 0;
         this.startingEnergy = startingEnergy;
+        if(this.startingEnergy < 1) this.startingEnergy = 1;
         this.dailyEnergyLoss = dailyEnergyLoss;
+        if(this.dailyEnergyLoss < 0) this.dailyEnergyLoss = 1;
         this.grassEnergyGain = grassEnergyGain;
+        if(this.grassEnergyGain < 0) this.grassEnergyGain = 0;
         this.energyUsedToCreateAnimal = energyUsedToCreateAnimal;
+        if(this.energyUsedToCreateAnimal < 0) this.energyUsedToCreateAnimal = 0;
         this.minEnergyToReproduce = minEnergyToReproduce;
+        if(this.minEnergyToReproduce < 0) this.minEnergyToReproduce = 0;
         this.genLength = genLength;
-        this.minNumberOfMutations = minNumberOfMutations;
+        if(this.genLength < 1) this.genLength = 1;
         this.maxNumberOfMutations = maxNumberOfMutations;
+        if(this.maxNumberOfMutations > this.genLength) this.maxNumberOfMutations = this.genLength;
+        if(this.maxNumberOfMutations < 0) this.maxNumberOfMutations = 0;
+        this.minNumberOfMutations = minNumberOfMutations;
+        if(this.minNumberOfMutations < 0) this.minNumberOfMutations = 0;
+        if(this.minNumberOfMutations > this.maxNumberOfMutations) this.minNumberOfMutations = this.maxNumberOfMutations;
         for(int i = 0; i < startingNumberOfAnimals; i++){
             generateRandomAnimal();
         }
@@ -137,7 +149,7 @@ public class SimulationEngine implements Runnable {
                 //losuje ponad równikiem
                 int newX = (int)(Math.random()*(this.equatorUpperRight.x + 1));
                 int newY;
-                if(i%2==0){
+                if(Math.random()<0.5){
                     newY = (int)(Math.random()*this.equatorLowerLeft.y);
                 }
                 else{

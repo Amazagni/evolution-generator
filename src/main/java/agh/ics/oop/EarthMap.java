@@ -13,6 +13,8 @@ public class EarthMap implements IWorldMap {
     public EarthMap(Vector2d upperRight){
 
         this.upperRight = upperRight;
+        if(this.upperRight.x < 1) this.upperRight = new Vector2d(1, this.upperRight.y);
+        if(this.upperRight.y < 1) this.upperRight = new Vector2d(this.upperRight.y, 1);
         this.toVisualize = new MapVisualizer(this);
 
     }

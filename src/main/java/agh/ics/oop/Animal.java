@@ -18,6 +18,7 @@ public class Animal implements Comparable<Animal>, IGameElement {
         this.position = startingPosition;
         this.genes = genes;
         this.genLength = genLength;
+        if(this.genLength < 1) this.genLength = 1;
         //losowo generuje początkowy kierunek zwierzaka
         this.direction = MapDirection.NORTH.toMapDirection((int)(Math.random()*8));
     }
