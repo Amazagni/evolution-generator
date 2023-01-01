@@ -22,7 +22,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
-public class App extends Application implements IAnimalMovementObserver {
+public class App extends Application {
 
     private GridPane mapGridPane = new GridPane();
     private SimulationEngine engine;
@@ -34,39 +34,6 @@ public class App extends Application implements IAnimalMovementObserver {
     private final XYChart.Series<Number, Number> avgKidsChartSeries = new XYChart.Series<>();
     private final XYChart.Series<Number, Number> avgLifeSpanChartSeries = new XYChart.Series<>();
     private ArrayList<XYChart.Series<Number, Number>> chartSeriesArrW1;
-
-//    public void init() {}
-
-    private void drawMap(EarthMap map, GridPane mapGridPane, boolean flag) {
-        mapGridPane.setGridLinesVisible(false);
-        GUIElement generator;
-        int height = map.getUpperRight().y;
-        int width = map.getUpperRight().x;
-        try {
-            generator = new GUIElement();
-            Vector2d currentPosition = new Vector2d(0, 0);
-            for (int i = 0; i <= width; i++) {
-                for (int j = 0; j <= height; j++) {
-                    currentPosition = new Vector2d(i, height - j);
-                    StackPane tile = generator.GUIMapElement((IGameElement) map.objectAt(currentPosition), currentPosition, engine);
-                    mapGridPane.add(tile, i, j);
-                    GridPane.setHalignment(tile, HPos.CENTER);
-                }
-            }
-        } catch (FileNotFoundException error) {
-            System.out.println("Couldn't load necessary files...");
-        }
-        if (!flag) {
-            Vector2d mapSize = map.getUpperRight();
-            int biggerCord = Math.max(mapSize.x, mapSize.y);
-            int tileSize = 25;
-            if(biggerCord > 24) tileSize = 600/biggerCord;
-            for (int a = 0; a <= width + 1; a++)
-                mapGridPane.getColumnConstraints().add(new ColumnConstraints(tileSize));
-            for (int b = 0; b <= height + 1; b++)
-                mapGridPane.getRowConstraints().add(new RowConstraints(tileSize));
-        }
-    }
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -191,10 +158,6 @@ public class App extends Application implements IAnimalMovementObserver {
         Button setParametersButton = new Button("Start new simulation");
         setParametersButton.setTranslateX(130);
         setParametersButton.setTranslateY(20);
-        Button startSimulationButton = new Button("Resume simulation");
-        Button stopSimulationButton = new Button("Pause simulation");
-        startSimulationButton.setVisible(false);
-        startSimulationButton.setManaged(false);
 
 //        IMAGE
         Image mainImage = new Image(new FileInputStream("src/main/resources/mainImage.png"));
@@ -239,7 +202,7 @@ public class App extends Application implements IAnimalMovementObserver {
         minNumberOfMutationsBox.setPadding(new Insets(0, 0, 10, 0));
         HBox maxNumberOfMutationsBox = new HBox(maxNumberOfMutationsLabel, maxNumberOfMutations);
         maxNumberOfMutationsBox.setPadding(new Insets(0, 0, 10, 0));
-        HBox buttonsBox = new HBox(startSimulationButton, stopSimulationButton);
+//        HBox buttonsBox = new HBox(startSimulationButton, stopSimulationButton);
 
         VBox settings = new VBox(
                 parametersLabel, mapWidthBox, mapHeightBox, animalsNumberBox, grassNumberBox,
@@ -254,10 +217,6 @@ public class App extends Application implements IAnimalMovementObserver {
         settings.setTranslateX(350);
         settings.setTranslateY(80);
 
-        this.mapGridPane.setPadding(new Insets(50, 50, 20, 50));
-        VBox mapBox = new VBox(this.mapGridPane, buttonsBox);
-//        mapBox.setAlignment(Pos.CENTER);
-
         Scene scene = new Scene(appBox, 1280, 960);
         primaryStage.setTitle("Evolution Simulator");
         Image Icon = new Image(new FileInputStream("src/main/resources/icon.png"));
@@ -266,44 +225,9 @@ public class App extends Application implements IAnimalMovementObserver {
         primaryStage.setScene(scene);
         primaryStage.show();
 
-
-
 //        BUTTONS ACTIONS
         setParametersButton.setOnAction(event -> {
-            this.map = new EarthMap(new Vector2d(
-                    Integer.parseInt(mapWidth.getText()),
-                    Integer.parseInt(mapHeight.getText())));
-            this.engine = new SimulationEngine(
-                    this.map,
-                    Integer.parseInt(animalsNumber.getText()),
-                    Integer.parseInt(grassNumber.getText()),
-                    Integer.parseInt(dailyGrassGrowth.getText()),
-                    Integer.parseInt(startingEnergy.getText()),
-                    Integer.parseInt(moveEnergy.getText()),
-                    Integer.parseInt(eatEnergy.getText()),
-                    Integer.parseInt(reproductionEnergy.getText()),
-                    Integer.parseInt(minReproductionEnergy.getText()),
-                    Integer.parseInt(genLength.getText()),
-                    Integer.parseInt(minNumberOfMutations.getText()),
-                    Integer.parseInt(maxNumberOfMutations.getText())
-                    );
-            this.engine.addObserver(this);
-            Thread engineThread = new Thread(this.engine);
-            engineThread.start();
-            drawMap(this.map, this.mapGridPane, false);
-            if(this.map.getUpperRight().x < 25) buttonsBox.setTranslateX(5 + this.map.getUpperRight().x*25/2);
-            else buttonsBox.setTranslateX(305);
-            Scene simulationScene = new Scene(mapBox, 1280, 960);
-            Stage simulationStage = new Stage();
-            simulationStage.setScene(simulationScene);
-            simulationStage.show();
-        });
-
-        startSimulationButton.setOnAction(event -> {
-            // resume the simulation
-//            this.engine.Start();
-            Simulation simulation = new Simulation(
-                    this,
+            Scene simulationScene = new Simulation(
                     Integer.parseInt(mapWidth.getText()),
                     Integer.parseInt(mapHeight.getText()),
                     Integer.parseInt(animalsNumber.getText()),
@@ -316,32 +240,7 @@ public class App extends Application implements IAnimalMovementObserver {
                     Integer.parseInt(minReproductionEnergy.getText()),
                     Integer.parseInt(genLength.getText()),
                     Integer.parseInt(minNumberOfMutations.getText()),
-                    Integer.parseInt(maxNumberOfMutations.getText()));
-//            startSimulationButton.setVisible(false);
-//            startSimulationButton.setManaged(false);
-//            stopSimulationButton.setVisible(true);
-//            stopSimulationButton.setManaged(true);
-        });
-
-        stopSimulationButton.setOnAction(event -> {
-            // stop the simulation
-            this.engine.Stop();
-            startSimulationButton.setVisible(true);
-            startSimulationButton.setManaged(true);
-            stopSimulationButton.setVisible(false);
-            stopSimulationButton.setManaged(false);
-        });
-
-    }
-
-    @Override
-    public void animalMoved() {
-        Platform.runLater(() -> {
-//            UPDATE EVERY MAP
-            mapGridPane.getChildren().clear();
-            drawMap(this.map, this.mapGridPane, true);
-
-//            UPDATE THE CHARTS
+                    Integer.parseInt(maxNumberOfMutations.getText())).simulationScene;
         });
     }
 }

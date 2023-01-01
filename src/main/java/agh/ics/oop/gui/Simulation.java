@@ -2,6 +2,7 @@ package agh.ics.oop.gui;
 
 import agh.ics.oop.*;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -13,11 +14,12 @@ import javafx.stage.Stage;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
-public class Simulation {
+public class Simulation implements IAnimalMovementObserver{
 
     private GridPane mapGridPane = new GridPane();
     private SimulationEngine engine;
     private EarthMap map;
+    public Scene simulationScene;
 
     private final XYChart.Series<Number, Number> animalsChartSeries = new XYChart.Series<>();
     private final XYChart.Series<Number, Number> plantsChartSeries = new XYChart.Series<>();
@@ -57,7 +59,7 @@ public class Simulation {
         }
     }
 
-    public Simulation(IAnimalMovementObserver app, int mapWidth, int mapHeight, int animalsNumber,
+    public Simulation(int mapWidth, int mapHeight, int animalsNumber,
                       int grassNumber, int dailyGrassGrowth,int startingEnergy, int moveEnergy, int eatEnergy,
                       int reproductionEnergy, int minReproductionEnergy, int genLength, int minNumberOfMutations,
                       int maxNumberOfMutations
@@ -75,16 +77,15 @@ public class Simulation {
                 this.map, animalsNumber, grassNumber, dailyGrassGrowth, startingEnergy, moveEnergy, eatEnergy,
                 reproductionEnergy, minReproductionEnergy, genLength, minNumberOfMutations, maxNumberOfMutations
             );
-        this.engine.addObserver(app);
+        this.engine.addObserver(this);
         Thread engineThread = new Thread(this.engine);
         engineThread.start();
-        this.engine.run();
         drawMap(this.map, this.mapGridPane, false);
         if(this.map.getUpperRight().x < 25) buttonsBox.setTranslateX(5 + this.map.getUpperRight().x*25/2);
         else buttonsBox.setTranslateX(305);
-        Scene simulationScene = new Scene(mapBox, 1280, 960);
+        this.simulationScene = new Scene(mapBox, 1280, 960);
         Stage simulationStage = new Stage();
-        simulationStage.setScene(simulationScene);
+        simulationStage.setScene(this.simulationScene);
         simulationStage.show();
 
         startSimulationButton.setOnAction(event -> {
@@ -103,6 +104,17 @@ public class Simulation {
             startSimulationButton.setManaged(true);
             stopSimulationButton.setVisible(false);
             stopSimulationButton.setManaged(false);
+        });
+    }
+
+    @Override
+    public void animalMoved() {
+        Platform.runLater(() -> {
+//            UPDATE EVERY MAP
+            mapGridPane.getChildren().clear();
+            drawMap(this.map, this.mapGridPane, true);
+
+//            UPDATE THE CHARTS
         });
     }
 }
