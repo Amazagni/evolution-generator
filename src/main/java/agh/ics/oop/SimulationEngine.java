@@ -57,7 +57,7 @@ public class SimulationEngine implements Runnable {
     public SimulationEngine(
             EarthMap map, int startingNumberOfAnimals, int startingNumberOfGrass, int dailyGrassGrowth, int startingEnergy,
             int dailyEnergyLoss, int grassEnergyGain, int energyUsedToCreateAnimal, int minEnergyToReproduce, int genLength,
-            int minNumberOfMutations, int maxNumberOfMutations){
+            int minNumberOfMutations, int maxNumberOfMutations, boolean earth, boolean forest, boolean slight, boolean following){
         this.map = map;
         this.startingNumberOfGrass = startingNumberOfGrass;
         if(this.startingNumberOfGrass < 0) this.startingNumberOfGrass = 0;
@@ -84,6 +84,14 @@ public class SimulationEngine implements Runnable {
         for(int i = 0; i < startingNumberOfAnimals; i++){
             generateRandomAnimal();
         }
+        this.earth = earth;
+        this.hellPortal = !earth;
+        this.forestedEquators = forest;
+        this.toxicCorpses = !forest;
+        this.slightlyChangedMutation = slight;
+        this.randomMutation = !slight;
+        this.correctGenesOrder = following;
+        this.slightlyChangedGenesOrder = !following;
         //jeżeli jest to mapa z rownikiem, to tworzymy nowe lowerLeft i upperRight
         //około 20% mapy to rownik (jak w poleceniu)
         if(this.forestedEquators){

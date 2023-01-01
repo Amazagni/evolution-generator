@@ -64,9 +64,9 @@ public class Simulation implements IAnimalMovementObserver{
     public Simulation(int mapWidth, int mapHeight, int animalsNumber,
                       int grassNumber, int dailyGrassGrowth,int startingEnergy, int moveEnergy, int eatEnergy,
                       int reproductionEnergy, int minReproductionEnergy, int genLength, int minNumberOfMutations,
-                      int maxNumberOfMutations
+                      int maxNumberOfMutations, boolean earth, boolean forest, boolean slight, boolean following
                       ) {
-        this.mapGridPane.setPadding(new Insets(50, 50, 20, 50));
+        this.mapGridPane.setPadding(new Insets(50, 0, 20, 50));
 
         //       CHARTS
         final NumberAxis AxisX = new NumberAxis();
@@ -109,7 +109,8 @@ public class Simulation implements IAnimalMovementObserver{
         this.map = new EarthMap(new Vector2d(mapWidth, mapHeight));
         this.engine = new SimulationEngine(
                 this.map, animalsNumber, grassNumber, dailyGrassGrowth, startingEnergy, moveEnergy, eatEnergy,
-                reproductionEnergy, minReproductionEnergy, genLength, minNumberOfMutations, maxNumberOfMutations
+                reproductionEnergy, minReproductionEnergy, genLength, minNumberOfMutations, maxNumberOfMutations, earth,
+                forest, slight, following
             );
         this.engine.addObserver(this);
         Thread engineThread = new Thread(this.engine);

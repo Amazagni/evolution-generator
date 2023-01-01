@@ -202,7 +202,6 @@ public class App extends Application {
         minNumberOfMutationsBox.setPadding(new Insets(0, 0, 10, 0));
         HBox maxNumberOfMutationsBox = new HBox(maxNumberOfMutationsLabel, maxNumberOfMutations);
         maxNumberOfMutationsBox.setPadding(new Insets(0, 0, 10, 0));
-//        HBox buttonsBox = new HBox(startSimulationButton, stopSimulationButton);
 
         VBox settings = new VBox(
                 parametersLabel, mapWidthBox, mapHeightBox, animalsNumberBox, grassNumberBox,
@@ -240,7 +239,8 @@ public class App extends Application {
                     Integer.parseInt(minReproductionEnergy.getText()),
                     Integer.parseInt(genLength.getText()),
                     Integer.parseInt(minNumberOfMutations.getText()),
-                    Integer.parseInt(maxNumberOfMutations.getText())).simulationScene;
+                    Integer.parseInt(maxNumberOfMutations.getText()),
+                    earth.isSelected(), forest.isSelected(), slight.isSelected(), following.isSelected()).simulationScene;
         });
     }
 }
