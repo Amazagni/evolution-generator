@@ -17,6 +17,9 @@ public class SimulationEngine implements Runnable {
     //DOPISANE
     private int minNumberOfMutations = 3;
     private int maxNumberOfMutations = 5;
+    private int averageLifeLength = 0;
+    private int summaryLifeLength = 0;
+    private int averageEnergyLevel = 0;
     public boolean isRunning = true;
 
     // Do statystyk
@@ -32,8 +35,8 @@ public class SimulationEngine implements Runnable {
     private Vector2d equatorLowerLeft;
     private Vector2d equatorUpperRight;
     private ArrayList<ToxicCorpsesField> corpses;
-    private boolean earth = false;
-    private boolean hellPortal = true;
+    private boolean earth = true;
+    private boolean hellPortal = false;
     public boolean forestedEquators = true;
     private boolean toxicCorpses = false;
     private boolean randomMutation = true;
@@ -194,7 +197,6 @@ public class SimulationEngine implements Runnable {
         boolean[] alreadyMutated = new boolean[genLength];
 
         int numberOfMutations = (int)(Math.random()*(this.maxNumberOfMutations - this.minNumberOfMutations + 1)) + minNumberOfMutations;
-        System.out.println(numberOfMutations);
 
         int currentNumberOfMutations = 0;
 
@@ -245,130 +247,144 @@ public class SimulationEngine implements Runnable {
             } catch (InterruptedException e) {
                 System.out.println("Wystąpił błąd: "+ e);
             }
-        while(this.isRunning) {
-            this.totalBorn += this.bornToday;
-            this.totalDead += this.deadToday;
-
-            System.out.println(this.map);
-            System.out.print("Dzień: ");
-            System.out.println(day);
-            System.out.print("Ilość żywych zwierząt: ");
-            System.out.println(this.animals.size());
-            System.out.print("Ilość urodzonych zwierząt: ");
-            System.out.println(this.totalBorn);
-            System.out.print("Dziś: ");
-            System.out.println(this.bornToday);
-            System.out.print("Ilość zmarłych zwierząt: ");
-            System.out.println(this.totalDead);
-            System.out.print("Dziś: ");
-            System.out.println(this.deadToday);
-
-            this.bornToday = this.animals.size();
-            this.day += 1;
-            this.deadToday = 0;
-
-
-            List<Animal> updatedAnimals = new ArrayList<>();//nowe animals dla engina i na tego podstawie uzupelni sie animals w mapie
-            //List<Vector2d> positions = new ArrayList<>();// lista pozycji okupowanych przez zwierzęta
-            int currGene;
-            MapDirection newDirection;
-            Vector2d newPosition;
-
-            //czyscimy animals z mapy
-            this.map.updateAnimals(new HashMap<>());
-
-            //każde zwierze sie porusza
-            for (Animal animal : this.animals) {
-                currGene = animal.getGen();
-                newDirection = animal.getDirection().changeDirection(currGene);
-                animal.updateDirection(newDirection);
-                newPosition = animal.getPosition().add(newDirection.toUnitVector());
-                animal.updatePosition(newPosition);
-                animal.updateEnergy(-this.dailyEnergyLoss);
-                animal.updateGeneIndex(this.correctGenesOrder,this.slightlyChangedGenesOrder);
-                //updateGeneIndex(animal);
-
-                //jesli zwierze wyszło poza granice mapy wysylamy je w odpowiednie miejsce
-                if(!(newPosition.follows(new Vector2d(0,0))&&newPosition.precedes(this.map.getUpperRight()))){
-                    //sendBackToBorder(animal);
-                    animal.sendBackToBorder(this.map,this.earth,this.hellPortal,this.energyUsedToCreateAnimal);
+            while(this.isRunning) {
+                this.totalBorn += this.bornToday;
+                this.totalDead += this.deadToday;
+                if(this.totalDead > 0){
+                    this.averageLifeLength = this.summaryLifeLength/this.totalDead;
                 }
-                animal.updateEnergy(-dailyEnergyLoss);
-                animal.icrementAge();
-                if(animal.getEnergy()>=0){
-                    updatedAnimals.add(animal);
-                    this.map.place(animal);
-                }
-                //zwierze umiera
-                else{
-                    if(this.toxicCorpses){
-                        for(int i = 0; i < this.corpses.size(); i++){
-                            if(this.corpses.get(i).getPosition().equals(newPosition)){
-                                ToxicCorpsesField tmp = corpses.get(i);
-                                tmp.icrementCorpses();
-                                this.corpses.set(i,tmp);
-                                break;
+                System.out.println(this.map);
+                System.out.print("Dzień: ");
+                System.out.println(day);
+                System.out.print("Ilość żywych zwierząt: ");
+                System.out.println(this.animals.size());
+                System.out.print("Ilość urodzonych zwierząt: ");
+                System.out.println(this.totalBorn);
+                System.out.print("Dziś: ");
+                System.out.println(this.bornToday);
+                System.out.print("Ilość zmarłych zwierząt: ");
+                System.out.println(this.totalDead);
+                System.out.print("Dziś: ");
+                System.out.println(this.deadToday);
+                System.out.println("Średnia długość życia");
+                System.out.println(this.averageLifeLength);
+                System.out.println("Średni poziom energii");
+                System.out.println(this.averageEnergyLevel);
 
+                this.bornToday = this.animals.size();
+                this.day += 1;
+                this.deadToday = 0;
+
+
+                List<Animal> updatedAnimals = new ArrayList<>();//nowe animals dla engina i na tego podstawie uzupelni sie animals w mapie
+                //List<Vector2d> positions = new ArrayList<>();// lista pozycji okupowanych przez zwierzęta
+                int currGene;
+                MapDirection newDirection;
+                Vector2d newPosition;
+
+                //czyscimy animals z mapy
+                this.map.updateAnimals(new HashMap<>());
+
+                //każde zwierze sie porusza
+                for (Animal animal : this.animals) {
+
+                    currGene = animal.getGen();
+                    newDirection = animal.getDirection().changeDirection(currGene);
+                    animal.updateDirection(newDirection);
+                    newPosition = animal.getPosition().add(newDirection.toUnitVector());
+                    animal.updatePosition(newPosition);
+                    animal.updateEnergy(-this.dailyEnergyLoss);
+                    animal.updateGeneIndex(this.correctGenesOrder,this.slightlyChangedGenesOrder);
+                    //updateGeneIndex(animal);
+
+                    //jesli zwierze wyszło poza granice mapy wysylamy je w odpowiednie miejsce
+                    if(!(newPosition.follows(new Vector2d(0,0))&&newPosition.precedes(this.map.getUpperRight()))){
+                        //sendBackToBorder(animal);
+                        animal.sendBackToBorder(this.map,this.earth,this.hellPortal,this.energyUsedToCreateAnimal);
+                    }
+                    animal.updateEnergy(-dailyEnergyLoss);
+                    animal.icrementAge();
+                    if(animal.getEnergy()>=0){
+                        updatedAnimals.add(animal);
+                        this.map.place(animal);
+                    }
+                    //zwierze umiera
+                    else{
+                        if(this.toxicCorpses){
+                            for(int i = 0; i < this.corpses.size(); i++){
+                                if(this.corpses.get(i).getPosition().equals(newPosition)){
+                                    ToxicCorpsesField tmp = corpses.get(i);
+                                    tmp.icrementCorpses();
+                                    this.corpses.set(i,tmp);
+                                    break;
+
+                                }
                             }
                         }
+                        this.deadToday += 1;
+                        this.summaryLifeLength += animal.getAge();
                     }
-                    this.deadToday += 1;
+
                 }
+                this.animals = updatedAnimals;
 
-            }
-            this.animals = updatedAnimals;
+                Map<Vector2d, ArrayList<Animal>> mapAniamls = this.map.getAnimals();
+                mapAniamls.forEach((position,animalList)->{
+                    //zjadanie trawy
+                    if(this.map.isGrassAt(position)){
+                        Animal updatedAnimal = animalList.get(0);
+                        updatedAnimal.updateEnergy(grassEnergyGain);
+                        animalList.set(0,updatedAnimal);
+                        //this.map.updateAnimalsAt(position,animalList);
+                        this.map.deleteGrassAt(position);
+                    }
+                    //rozmnażanie
+                    int animalsOnPosition = animalList.size();
+                    if(animalsOnPosition>=2){
+                        for(int i = 0 ; i < animalsOnPosition -1; i+=2){
+                            Animal firstParent = animalList.get(i);
+                            Animal secondParent = animalList.get(i+1);
+                            if(secondParent.getEnergy()<this.minEnergyToReproduce)break;
+                            //50% szans na to że potomek dziedziczy lewą część od rodzica z wiekszą ilośćią energii
+                            if(Math.random()<0.5){
+                                firstParent = animalList.get(i+1);
+                                secondParent = animalList.get(i);
+                            }
+                            ArrayList<Integer> childGenes = this.CreateChildGenes(firstParent,secondParent);
 
-            Map<Vector2d, ArrayList<Animal>> mapAniamls = this.map.getAnimals();
-            mapAniamls.forEach((position,animalList)->{
-                //zjadanie trawy
-                if(this.map.isGrassAt(position)){
-                    Animal updatedAnimal = animalList.get(0);
-                    updatedAnimal.updateEnergy(grassEnergyGain);
-                    animalList.set(0,updatedAnimal);
-                    //this.map.updateAnimalsAt(position,animalList);
-                    this.map.deleteGrassAt(position);
-                }
-                //rozmnażanie
-                int animalsOnPosition = animalList.size();
-                if(animalsOnPosition>=2){
-                    for(int i = 0 ; i < animalsOnPosition -1; i+=2){
-                        Animal firstParent = animalList.get(i);
-                        Animal secondParent = animalList.get(i+1);
-                        if(secondParent.getEnergy()<this.minEnergyToReproduce)break;
-                        //50% szans na to że potomek dziedziczy lewą część od rodzica z wiekszą ilośćią energii
-                        if(Math.random()<0.5){
-                            firstParent = animalList.get(i+1);
-                            secondParent = animalList.get(i);
-                        }
-                        ArrayList<Integer> childGenes = this.CreateChildGenes(firstParent,secondParent);
+                            //zmniejszamy energie rodzicow;
+                            int firstParentEnergyLoss = (int)(this.energyUsedToCreateAnimal *
+                                    (firstParent.getEnergy()/(double)(firstParent.getEnergy()+secondParent.getEnergy())));
+                            firstParent.updateEnergy(-firstParentEnergyLoss);
+                            secondParent.updateEnergy(-(this.energyUsedToCreateAnimal - firstParentEnergyLoss));
 
-                        //zmniejszamy energie rodzicow;
-                        int firstParentEnergyLoss = (int)(this.energyUsedToCreateAnimal *
-                                (firstParent.getEnergy()/(double)(firstParent.getEnergy()+secondParent.getEnergy())));
-                        firstParent.updateEnergy(-firstParentEnergyLoss);
-                        secondParent.updateEnergy(-(this.energyUsedToCreateAnimal - firstParentEnergyLoss));
-
-                        //dodajemy nowe zwierze
-                        Animal child = new Animal(position,childGenes,this.energyUsedToCreateAnimal, genLength);
-                        animalList.add(child);
-                        this.animals.add(child);
+                            //dodajemy nowe zwierze
+                            Animal child = new Animal(position,childGenes,this.energyUsedToCreateAnimal, genLength);
+                            animalList.add(child);
+                            this.animals.add(child);
                         }
 
+                    }
+                    int summaryEnergy = 0;
+                    for(int i = 0; i < animalsOnPosition; i++){
+                        summaryEnergy += animalList.get(i).getEnergy();
+                    }
+                    this.averageEnergyLevel = 0;
+                    if(animalList.size()!= 0)this.averageEnergyLevel = summaryEnergy / animals.size();
+                });
+                this.bornToday = this.animals.size() + this.deadToday - this.bornToday;
+                generateRandomGrass(this.dailyGrassGrowth);
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    System.out.println("Przerwano symulacje: "+ e);
+
+
                 }
-            });
-            this.bornToday = this.animals.size() + this.deadToday - this.bornToday;
-            generateRandomGrass(this.dailyGrassGrowth);
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                System.out.println("Przerwano symulacje: "+ e);
 
-
-            }
-
-        // observers
-        for (IAnimalMovementObserver observer: observers) {observer.animalMoved();}
-        }}
+                // observers
+                for (IAnimalMovementObserver observer: observers) {observer.animalMoved();}
+            }}
     }
 }
 //obie wersje wyjscia zwierzęcia poza mapę
