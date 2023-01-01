@@ -1,16 +1,12 @@
 package agh.ics.oop.gui;
 
-import agh.ics.oop.EarthMap;
-import agh.ics.oop.IGameElement;
-import agh.ics.oop.SimulationEngine;
-import agh.ics.oop.Vector2d;
+import agh.ics.oop.*;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -18,14 +14,12 @@ import javafx.scene.layout.GridPane;
 
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
-import javafx.scene.text.Text;
-import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
-public class App extends Application implements IAnimalMovementObserver{
+public class App extends Application implements IAnimalMovementObserver {
 
     private GridPane mapGridPane = new GridPane();
     private SimulationEngine engine;
@@ -82,7 +76,7 @@ public class App extends Application implements IAnimalMovementObserver{
         name.setFont(new Font(48));
         name.setPadding(new Insets(0, 0, 20, 0));
         authors.setFont(new Font(20));
-        authors.setTranslateX(55);
+        authors.setTranslateX(52);
         authors.setPadding(new Insets(20, 0, 0, 0));
         mapHeightLabel.setTranslateY(5);
         mapHeightLabel.setPadding(new Insets(0, 10, 0, 0));
@@ -216,14 +210,16 @@ public class App extends Application implements IAnimalMovementObserver{
                 mutationRadiosBox, behaviourRadiosBox, setParametersButton
             );
 
+        HBox firstView = new HBox(nameWithImage, settings);
+        VBox appBox = new VBox(firstView);
+
         settings.setTranslateX(300);
         settings.setTranslateY(118);
 
         VBox mapBox = new VBox(this.mapGridPane);
         mapBox.setAlignment(Pos.CENTER);
-        HBox test = new HBox(nameWithImage, settings);
 
-        Scene scene = new Scene(test, 1280, 960);
+        Scene scene = new Scene(appBox, 1280, 960);
         primaryStage.setTitle("Evolution Simulator");
         Image Icon = new Image(new FileInputStream("src/main/resources/icon.png"));
 
@@ -235,6 +231,16 @@ public class App extends Application implements IAnimalMovementObserver{
         Thread engineThread = new Thread(this.engine);
         engineThread.start();
         drawMap(this.map, this.mapGridPane, false);
+
+
+//        BUTTONS ACTIONS
+        setParametersButton.setOnAction(event -> {
+//            Getting data from the text areas
+
+//            changing the view
+            firstView.setVisible(false);
+            firstView.setManaged(false);
+        });
     }
 
     @Override
