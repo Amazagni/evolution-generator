@@ -243,29 +243,28 @@ public class SimulationEngine implements Runnable {
         }
 
     }
-//    private void updateMostPopularGenotype(){
-//        this.mostPopularGenotypeCount = 0;
-//        for(int i = 0; i < this.animals.size(); i++){
-//            int count = 1;
-//            ArrayList<Integer> currGenotype = this.animals.get(i).getGenes();
-//            for(int j = i + 1; i < this.animals.size(); j++){
-//                ArrayList<Integer> toCompare = this.animals.get(j).getGenes();
-//                boolean flag = true;
-//                for(int k = 0; k < this.genLength; k++){
-//                    flag = currGenotype.get(k) == toCompare.get(k);
-//                    System.out.println(k);
-//                    if(!flag){
-//                        break;
-//                    }
-//                }
-//                if(flag)count += 1;
-//            }
-//            if(count > this.mostPopularGenotypeCount){
-//                this.mostPopularGenotypeCount = count;
-//                this.mostPopularGenotype = currGenotype;
-//            }
-//        }
-//    }
+    private void updateMostPopularGenotype(){
+        this.mostPopularGenotypeCount = 0;
+        for(int i = 0; i < this.animals.size(); i++){
+            int count = 1;
+            ArrayList<Integer> currGenotype = this.animals.get(i).getGenes();
+            for(int j = i + 1; j < this.animals.size(); j++){
+                ArrayList<Integer> toCompare = this.animals.get(j).getGenes();
+                boolean flag = true;
+                for(int k = 0; k < this.genLength; k++){
+                    flag = currGenotype.get(k) == toCompare.get(k);
+                    if(!flag){
+                        break;
+                    }
+                }
+                if(flag)count += 1;
+            }
+            if(count > this.mostPopularGenotypeCount){
+                this.mostPopularGenotypeCount = count;
+                this.mostPopularGenotype = currGenotype;
+            }
+        }
+    }
 
     public void Start(){ this.isRunning = true; }
     public void Stop(){
@@ -285,7 +284,7 @@ public class SimulationEngine implements Runnable {
                 if(this.totalDead > 0){
                     this.averageLifeLength = this.summaryLifeLength/this.totalDead;
                 }
-               // updateMostPopularGenotype();
+                updateMostPopularGenotype();
                 System.out.println(this.map);
                 System.out.print("Dzień: ");
                 System.out.println(day);
@@ -303,10 +302,10 @@ public class SimulationEngine implements Runnable {
                 System.out.println(this.averageLifeLength);
                 System.out.println("Średni poziom energii");
                 System.out.println(this.averageEnergyLevel);
-//                System.out.println("Najpopularniejszy genotyp: ");
-//                System.out.println(this.mostPopularGenotype);
-//                System.out.print("Wystąpień; ");
-//                System.out.println(this.mostPopularGenotypeCount);
+                System.out.println("Najpopularniejszy genotyp: ");
+                System.out.println(this.mostPopularGenotype);
+                System.out.print("Wystąpień: ");
+                System.out.println(this.mostPopularGenotypeCount);
 
                 this.bornToday = this.animals.size();
                 this.day += 1;
@@ -332,7 +331,6 @@ public class SimulationEngine implements Runnable {
                     animal.updatePosition(newPosition);
                     animal.updateEnergy(-this.dailyEnergyLoss);
                     animal.updateGeneIndex(this.correctGenesOrder,this.slightlyChangedGenesOrder);
-                    //updateGeneIndex(animal);
 
                     //jesli zwierze wyszło poza granice mapy wysylamy je w odpowiednie miejsce
                     if(!(newPosition.follows(new Vector2d(0,0))&&newPosition.precedes(this.map.getUpperRight()))){
@@ -355,11 +353,14 @@ public class SimulationEngine implements Runnable {
                                     this.corpses.set(i,tmp);
                                     break;
 
+
                                 }
                             }
                         }
+
                         this.deadToday += 1;
                         this.summaryLifeLength += animal.getAge();
+                        animal.updateDiedAt(this.day);
                     }
 
                 }
@@ -371,6 +372,7 @@ public class SimulationEngine implements Runnable {
                     if(this.map.isGrassAt(position)){
                         Animal updatedAnimal = animalList.get(0);
                         updatedAnimal.updateEnergy(grassEnergyGain);
+                        updatedAnimal.incrementGrassEaten();
                         animalList.set(0,updatedAnimal);
                         //this.map.updateAnimalsAt(position,animalList);
                         this.map.deleteGrassAt(position);
@@ -424,52 +426,3 @@ public class SimulationEngine implements Runnable {
             }}
     }
 }
-//obie wersje wyjscia zwierzęcia poza mapę
-//FUNKCJA PRZEROBIONA NA METODE W ANIMAL!!!
-//    private void sendBackToBorder(Animal animal){
-//        Vector2d position = animal.getPosition();
-//        int newX = position.x;
-//        int newY = position.y;
-//        if(this.earth){
-//            if(!position.follows(new Vector2d(0,0))){
-//                if(position.x < 0){
-//                    newX = this.map.getUpperRight().x;
-//                }
-//                if(position.y < 0){
-//                    newY = this.map.getUpperRight().y;
-//                }
-//            }
-//            if(!position.precedes(this.map.getUpperRight())){
-//                if(position.x > this.map.getUpperRight().x){
-//                    newX = 0;
-//                }
-//                if(position.y > this.map.getUpperRight().y){
-//                    newY = 0;
-//                }
-//            }
-//        }
-//        if(this.hellPortal){
-//            newX = (int)(Math.random()*(this.map.getUpperRight().x+1));
-//            newY = (int)(Math.random()*(this.map.getUpperRight().y+1));
-//            animal.updateEnergy(-this.energyUsedToCreateAnimal);
-//        }
-//        animal.updatePosition(new Vector2d(newX,newY));
-//    }
-//obie wersje otrzymywania kolejnego genu
-//FUNKCJA PRZEROBIONA NA METODE W ANIMAL!!!
-//    private void updateGeneIndex(Animal animal){
-//        //jesli mamy ustawioną odpowiednia kolejnosc, index zmienia sie tylko o 1
-//        if(this.correctGenesOrder){
-//            animal.updateIndex(1);
-//        }
-//        // w przeciwnym przypadku sprawdzamy czy wylosowalismy zmiane kolejnosci, czy może jednak wciaz mieniamy indeks o 1
-//        if(this.slightlyChangedGenesOrder){
-//            int randomPercent = (int)(Math.random()*10); //wartosci 0,1,...,9
-//            if(randomPercent <= 1) {
-//                animal.updateIndex((int) (Math.random() * (genLength + 1)));
-//            }
-//            else{
-//                animal.updateIndex(1);
-//            }
-//        }
-//    }

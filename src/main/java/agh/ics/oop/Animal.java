@@ -9,8 +9,10 @@ public class Animal implements Comparable<Animal>, IGameElement {
     private Vector2d position;
     private int energy;
     private int age = 0; //ilosc dni które zwierze przeżyło
+    private int grassEaten = 0; //zjedzone kępy trawy
     private int numberOfChildren = 0; // ilosc dzieci (age i numberOfChildren potrzebne do walki o trawe)
     private int genLength = 10;
+    private int diedAt = -1;
 
 
     public Animal(Vector2d startingPosition, ArrayList<Integer> genes, int energy, int genLength){
@@ -23,6 +25,19 @@ public class Animal implements Comparable<Animal>, IGameElement {
         this.direction = MapDirection.NORTH.toMapDirection((int)(Math.random()*8));
     }
 
+    public int getDiedAt() {
+        return this.diedAt;
+    }
+    public void updateDiedAt(int day){
+        this.diedAt = day;
+    }
+
+    public int getGrassEaten(){
+        return  this.grassEaten;
+    }
+    public void incrementGrassEaten(){
+        this.grassEaten += 1;
+    }
     //zwraca gen ktorego teraz użyjemy;
     public int getGen(){
         return this.genes.get(genIndex);
