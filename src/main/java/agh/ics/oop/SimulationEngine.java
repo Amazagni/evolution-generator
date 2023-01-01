@@ -44,11 +44,12 @@ public class SimulationEngine implements Runnable {
     private EarthMap map;
 
     public SimulationEngine(
-            EarthMap map, int startingNumberOfAnimals, int startingNumberOfGrass, int startingEnergy,
+            EarthMap map, int startingNumberOfAnimals, int startingNumberOfGrass, int dailyGrassGrowth, int startingEnergy,
             int dailyEnergyLoss, int grassEnergyGain, int energyUsedToCreateAnimal, int minEnergyToReproduce, int genLength,
             int minNumberOfMutations, int maxNumberOfMutations){
         this.map = map;
         this.startingNumberOfGrass = startingNumberOfGrass;
+        this.dailyGrassGrowth = dailyGrassGrowth;
         this.startingEnergy = startingEnergy;
         this.dailyEnergyLoss = dailyEnergyLoss;
         this.grassEnergyGain = grassEnergyGain;

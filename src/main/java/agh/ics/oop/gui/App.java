@@ -69,6 +69,7 @@ public class App extends Application implements IAnimalMovementObserver {
         Label mapHeightLabel = new Label("Map height: ");
         Label animalsNumberLabel = new Label("Starting number of animals: ");
         Label grassNumberLabel = new Label("Starting number of grass: ");
+        Label dailyGrassGrowthLabel = new Label("Daily grass growth: ");
         Label startingEnergyLabel = new Label("Starting energy: ");
         Label moveEnergyLabel = new Label("Energy consumed on move: ");
         Label eatEnergyLabel = new Label("Energy gained by eating: ");
@@ -93,6 +94,8 @@ public class App extends Application implements IAnimalMovementObserver {
         animalsNumberLabel.setPadding(new Insets(0, 10, 0, 0));
         grassNumberLabel.setTranslateY(4);
         grassNumberLabel.setPadding(new Insets(0, 10, 0, 0));
+        dailyGrassGrowthLabel.setTranslateY(4);
+        dailyGrassGrowthLabel.setPadding(new Insets(0, 10, 0, 0));
         startingEnergyLabel.setTranslateY(4);
         startingEnergyLabel.setPadding(new Insets(0, 10, 0, 0));
         moveEnergyLabel.setTranslateY(4);
@@ -117,6 +120,7 @@ public class App extends Application implements IAnimalMovementObserver {
         TextField mapHeight = new TextField("15");
         TextField animalsNumber = new TextField("10");
         TextField grassNumber = new TextField("20");
+        TextField dailyGrassGrowth = new TextField("20");
         TextField startingEnergy = new TextField("120");
         TextField moveEnergy = new TextField("5");
         TextField eatEnergy = new TextField("40");
@@ -131,6 +135,7 @@ public class App extends Application implements IAnimalMovementObserver {
         mapHeight.setMaxWidth(60);
         animalsNumber.setMaxWidth(60);
         grassNumber.setMaxWidth(60);
+        dailyGrassGrowth.setMaxWidth(60);
         startingEnergy.setMaxWidth(60);
         moveEnergy.setMaxWidth(60);
         eatEnergy.setMaxWidth(60);
@@ -188,7 +193,7 @@ public class App extends Application implements IAnimalMovementObserver {
 //        HBOX'ES AND VBOX'ES
         VBox nameWithImage = new VBox(name, mainImageView, authors);
         nameWithImage.setTranslateX(100);
-        nameWithImage.setTranslateY(80);
+        nameWithImage.setTranslateY(65);
         HBox mapWidthBox = new HBox(mapWidthLabel, mapWidth);
         mapWidthBox.setPadding(new Insets(10, 0, 10, 0));
         HBox mapHeightBox = new HBox(mapHeightLabel, mapHeight);
@@ -197,6 +202,8 @@ public class App extends Application implements IAnimalMovementObserver {
         animalsNumberBox.setPadding(new Insets(0, 0, 10, 0));
         HBox grassNumberBox = new HBox(grassNumberLabel, grassNumber);
         grassNumberBox.setPadding(new Insets(0, 0, 10, 0));
+        HBox dailyGrassGrowthBox = new HBox(dailyGrassGrowthLabel, dailyGrassGrowth);
+        dailyGrassGrowthBox.setPadding(new Insets(0, 0, 10, 0));
         HBox startingEnergyBox = new HBox(startingEnergyLabel, startingEnergy);
         startingEnergyBox.setPadding(new Insets(0, 0, 10, 0));
         HBox moveEnergyBox = new HBox(moveEnergyLabel, moveEnergy);
@@ -225,7 +232,7 @@ public class App extends Application implements IAnimalMovementObserver {
 
         VBox settings = new VBox(
                 parametersLabel, mapWidthBox, mapHeightBox, animalsNumberBox, grassNumberBox,
-                startingEnergyBox, moveEnergyBox, eatEnergyBox, reproductionEnergyBox,
+                dailyGrassGrowthBox, startingEnergyBox, moveEnergyBox, eatEnergyBox, reproductionEnergyBox,
                 minReproductionEnergyBox, genLengthBox, minNumberOfMutationsBox, maxNumberOfMutationsBox,
                 mapRadiosBox, mapTypeRadiosBox, mutationRadiosBox, behaviourRadiosBox, setParametersButton
             );
@@ -234,7 +241,7 @@ public class App extends Application implements IAnimalMovementObserver {
         VBox appBox = new VBox(firstView);
 
         settings.setTranslateX(350);
-        settings.setTranslateY(90);
+        settings.setTranslateY(80);
 
         VBox mapBox = new VBox(this.mapGridPane);
         mapBox.setAlignment(Pos.CENTER);
@@ -263,6 +270,7 @@ public class App extends Application implements IAnimalMovementObserver {
                     this.map,
                     Integer.parseInt(animalsNumber.getText()),
                     Integer.parseInt(grassNumber.getText()),
+                    Integer.parseInt(dailyGrassGrowth.getText()),
                     Integer.parseInt(startingEnergy.getText()),
                     Integer.parseInt(moveEnergy.getText()),
                     Integer.parseInt(eatEnergy.getText()),
