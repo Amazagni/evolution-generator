@@ -30,10 +30,6 @@ public class App extends Application implements IAnimalMovementObserver {
 
     private void drawMap(EarthMap map, GridPane mapGridPane, boolean flag) {
         mapGridPane.setGridLinesVisible(false);
-        Label yx = new Label("y/x");
-        yx.setFont(new Font(20));
-        mapGridPane.add(yx, 0, 0);
-        GridPane.setHalignment(yx, HPos.CENTER);
         GUIElement generator;
         int height = map.getUpperRight().y;
         int width = map.getUpperRight().x;
@@ -186,8 +182,10 @@ public class App extends Application implements IAnimalMovementObserver {
         Button setParametersButton = new Button("Start new simulation");
         setParametersButton.setTranslateX(130);
         setParametersButton.setTranslateY(20);
-        Button startSimulationButton = new Button("Start simulation");
-        Button stopSimulationButton = new Button("Stop simulation");
+        Button startSimulationButton = new Button("Resume simulation");
+        Button stopSimulationButton = new Button("Pause simulation");
+        startSimulationButton.setVisible(false);
+        startSimulationButton.setManaged(false);
 
 //        IMAGE
         Image mainImage = new Image(new FileInputStream("src/main/resources/mainImage.png"));
@@ -247,8 +245,9 @@ public class App extends Application implements IAnimalMovementObserver {
         settings.setTranslateX(350);
         settings.setTranslateY(80);
 
-        VBox mapBox = new VBox(this.mapGridPane);
-        mapBox.setAlignment(Pos.CENTER);
+        this.mapGridPane.setPadding(new Insets(50, 50, 20, 50));
+        VBox mapBox = new VBox(this.mapGridPane, buttonsBox);
+//        mapBox.setAlignment(Pos.CENTER);
 
         Scene scene = new Scene(appBox, 1280, 960);
         primaryStage.setTitle("Evolution Simulator");
@@ -262,11 +261,6 @@ public class App extends Application implements IAnimalMovementObserver {
 
 //        BUTTONS ACTIONS
         setParametersButton.setOnAction(event -> {
-//            Getting data from the text areas
-
-//            changing the view
-//            firstView.setVisible(false);
-//            firstView.setManaged(false);
             this.map = new EarthMap(new Vector2d(
                     Integer.parseInt(mapWidth.getText()),
                     Integer.parseInt(mapHeight.getText())));
@@ -288,10 +282,30 @@ public class App extends Application implements IAnimalMovementObserver {
             Thread engineThread = new Thread(this.engine);
             engineThread.start();
             drawMap(this.map, this.mapGridPane, false);
+            if(this.map.getUpperRight().x < 25) buttonsBox.setTranslateX(5 + this.map.getUpperRight().x*25/2);
+            else buttonsBox.setTranslateX(305);
             Scene simulationScene = new Scene(mapBox, 1280, 960);
             Stage simulationStage = new Stage();
             simulationStage.setScene(simulationScene);
             simulationStage.show();
+        });
+
+        startSimulationButton.setOnAction(event -> {
+            // resume the simulation
+            this.engine.Start();
+            startSimulationButton.setVisible(false);
+            startSimulationButton.setManaged(false);
+            stopSimulationButton.setVisible(true);
+            stopSimulationButton.setManaged(true);
+        });
+
+        stopSimulationButton.setOnAction(event -> {
+            // stop the simulation
+            this.engine.Stop();
+            startSimulationButton.setVisible(true);
+            startSimulationButton.setManaged(true);
+            stopSimulationButton.setVisible(false);
+            stopSimulationButton.setManaged(false);
         });
 
     }

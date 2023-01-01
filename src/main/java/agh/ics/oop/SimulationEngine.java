@@ -233,9 +233,7 @@ public class SimulationEngine implements Runnable {
 
     }
 
-    public void Start(){
-        this.isRunning = true;
-    }
+    public void Start(){ this.isRunning = true; }
     public void Stop(){
         this.isRunning = false;
     }
