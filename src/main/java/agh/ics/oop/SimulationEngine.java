@@ -353,11 +353,14 @@ public class SimulationEngine implements Runnable {
                                     this.corpses.set(i,tmp);
                                     break;
 
+
                                 }
                             }
                         }
+
                         this.deadToday += 1;
                         this.summaryLifeLength += animal.getAge();
+                        animal.updateDiedAt(this.day);
                     }
 
                 }
@@ -369,6 +372,7 @@ public class SimulationEngine implements Runnable {
                     if(this.map.isGrassAt(position)){
                         Animal updatedAnimal = animalList.get(0);
                         updatedAnimal.updateEnergy(grassEnergyGain);
+                        updatedAnimal.incrementGrassEaten();
                         animalList.set(0,updatedAnimal);
                         //this.map.updateAnimalsAt(position,animalList);
                         this.map.deleteGrassAt(position);
