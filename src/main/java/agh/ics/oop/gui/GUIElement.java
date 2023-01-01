@@ -30,11 +30,14 @@ public class GUIElement {
     public StackPane GUIMapElement(IGameElement gameElement, Vector2d position, SimulationEngine engine) {
         ImageView groundTile;
         ImageView gameElementImage;
+        Vector2d mapSize = engine.getMap().getUpperRight();
+        int biggerCord = Math.max(mapSize.x, mapSize.y);
+        int tileSize = 25;
+        if(biggerCord > 24) tileSize = 600/biggerCord;
         boolean isForest = false;
         if(gameElement instanceof Animal) {
             // getting the animal image facing north
             gameElementImage = new ImageView(animalImage);
-//            System.out.println("dupa");
             // rotating the animal depending on its direction
             switch (((Animal) gameElement).getDirection()) {
                 case NORTH -> gameElementImage.setRotate(gameElementImage.getRotate() + 0);
@@ -46,15 +49,15 @@ public class GUIElement {
                 case WEST -> gameElementImage.setRotate(gameElementImage.getRotate() + 270);
                 case NORTH_WEST -> gameElementImage.setRotate(gameElementImage.getRotate() + 315);
             };
-            gameElementImage.setFitHeight(25);
-            gameElementImage.setFitWidth(25);
+            gameElementImage.setFitHeight(tileSize);
+            gameElementImage.setFitWidth(tileSize);
             //changing the view depending on the energy
         }
         else if (gameElement instanceof Grass) {
             // getting the bush (grass) image
             gameElementImage = new ImageView(bushImage);
-            gameElementImage.setFitHeight(15);
-            gameElementImage.setFitWidth(15);
+            gameElementImage.setFitHeight(0.6 * tileSize);
+            gameElementImage.setFitWidth(0.6 * tileSize);
         }
         else {
             gameElementImage = new ImageView(grassImage);
@@ -65,8 +68,8 @@ public class GUIElement {
             groundTile = new ImageView(jungleImage);
         }
         else groundTile = new ImageView(grassImage);
-        groundTile.setFitHeight(25);
-        groundTile.setFitWidth(25);
+        groundTile.setFitHeight(tileSize);
+        groundTile.setFitWidth(tileSize);
         StackPane stackPane = new StackPane();
         stackPane.getChildren().addAll(groundTile, gameElementImage);
         return stackPane;

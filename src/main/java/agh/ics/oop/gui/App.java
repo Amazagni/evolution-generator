@@ -52,10 +52,14 @@ public class App extends Application implements IAnimalMovementObserver {
             System.out.println("Couldn't load necessary files...");
         }
         if (!flag) {
+            Vector2d mapSize = map.getUpperRight();
+            int biggerCord = Math.max(mapSize.x, mapSize.y);
+            int tileSize = 25;
+            if(biggerCord > 24) tileSize = 600/biggerCord;
             for (int a = 0; a <= width + 1; a++)
-                mapGridPane.getColumnConstraints().add(new ColumnConstraints(25));
+                mapGridPane.getColumnConstraints().add(new ColumnConstraints(tileSize));
             for (int b = 0; b <= height + 1; b++)
-                mapGridPane.getRowConstraints().add(new RowConstraints(25));
+                mapGridPane.getRowConstraints().add(new RowConstraints(tileSize));
         }
     }
 

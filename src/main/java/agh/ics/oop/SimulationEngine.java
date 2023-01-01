@@ -101,6 +101,8 @@ public class SimulationEngine implements Runnable {
         return null;
     }
 
+    public EarthMap getMap() {return this.map;}
+
     public void addObserver(IAnimalMovementObserver application) {this.observers.add(application);}
 
     public boolean isForestTile(Vector2d position) {

@@ -14,7 +14,9 @@ public class EarthMap implements IWorldMap {
 
         this.upperRight = upperRight;
         if(this.upperRight.x < 1) this.upperRight = new Vector2d(1, this.upperRight.y);
+        if(this.upperRight.x > 100) this.upperRight = new Vector2d(100, this.upperRight.y);
         if(this.upperRight.y < 1) this.upperRight = new Vector2d(this.upperRight.y, 1);
+        if(this.upperRight.y > 100) this.upperRight = new Vector2d(this.upperRight.y, 1);
         this.toVisualize = new MapVisualizer(this);
 
     }
