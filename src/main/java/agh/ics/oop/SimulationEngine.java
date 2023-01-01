@@ -14,6 +14,10 @@ public class SimulationEngine implements Runnable {
     private int minEnergyToReproduce = 25; // - || - min energia zeby zwierze moglo sie rozmnazac ps trzeba zmienić tą nazwe xd
     private int genLength = 10; //Nie pamiętam ile jak długa miała być ta tablica -- to ma być parametr wejściowy
 
+    //DOPISANE
+    private int minNumberOfMutations = 3;
+    private int maxNumberOfMutations = 5;
+
     // Do statystyk
     private int day = 0;
     private int totalDead = 0;
@@ -168,28 +172,23 @@ public class SimulationEngine implements Runnable {
                 (firstParent.getEnergy()/(double)(firstParent.getEnergy()+secondParent.getEnergy())));
 
         ArrayList<Integer> childGenes = new ArrayList<>();
+        boolean[] alreadyMutated = new boolean[genLength];
+
+        int numberOfMutations = (int)(Math.random()*(this.maxNumberOfMutations - this.minNumberOfMutations + 1)) + minNumberOfMutations;
+        System.out.println(numberOfMutations);
+
+        int currentNumberOfMutations = 0;
+
         for(int j = 0; j < genesFromFirstParent; j++){
-            int tmpGene = firstParent.getGenAt(j);
-            if(Math.random()<0.5){
-                //mutujemy gen
-                if(this.slightlyChangedMutation){
-                    if(Math.random()<0.5){
-                        tmpGene = (tmpGene+1)%8;
-                    }
-                    else{
-                        tmpGene -= 1;
-                        if(tmpGene < 0)tmpGene = 7;
-                    }
-                }
-                if(this.randomMutation){
-                    tmpGene = (int)(Math.random()*8);
-                }
-            }
-            childGenes.add(tmpGene);
+            childGenes.add(firstParent.getGenAt(j));
         }
         for(int j = genesFromFirstParent; j < this.genLength; j++){
-            int tmpGene = secondParent.getGenAt(j);
-            if(Math.random()<0.5){
+            childGenes.add(secondParent.getGenAt(j));
+        }
+        int id = 0;
+        while(true){
+            if(Math.random()<0.5 && !alreadyMutated[id]){
+                int tmpGene = childGenes.get(id);
                 //mutujemy gen
                 if(this.slightlyChangedMutation){
                     if(Math.random()<0.5){
@@ -203,10 +202,16 @@ public class SimulationEngine implements Runnable {
                 if(this.randomMutation){
                     tmpGene = (int)(Math.random()*8);
                 }
+                alreadyMutated[id] = true;
+                childGenes.set(id,tmpGene);
+                currentNumberOfMutations += 1;
+                if(currentNumberOfMutations == numberOfMutations)return childGenes;
+                id+=1;
+                id = id%genLength;
+
             }
-            childGenes.add(tmpGene);
         }
-        return childGenes;
+
     }
 
     @Override

@@ -10,6 +10,7 @@ public class Animal implements Comparable<Animal>, IGameElement {
     private int energy;
     private int age = 0; //ilosc dni które zwierze przeżyło
     private int numberOfChildren = 0; // ilosc dzieci (age i numberOfChildren potrzebne do walki o trawe)
+    private int genLength = 10;
 
 
     public Animal(Vector2d startingPosition, ArrayList<Integer> genes,int energy){
@@ -46,7 +47,7 @@ public class Animal implements Comparable<Animal>, IGameElement {
         return this.position;
     }
     public void updateIndex(int  a){
-        this.genIndex = (this.genIndex + a)%10; //dzielimy przez dlugosc genu, dalej nie pamietam ile to było
+        this.genIndex = (this.genIndex + a)%genLength; //dzielimy przez dlugosc genu, dalej nie pamietam ile to było
     }
     public String toString(){
         return "A";
@@ -126,7 +127,7 @@ public class Animal implements Comparable<Animal>, IGameElement {
         if(slightlyChangedGenesOrder){
             int randomPercent = (int)(Math.random()*10); //wartosci 0,1,...,9
             if(randomPercent <= 1) {
-                this.updateIndex((int) (Math.random() * (10 + 1))); // ZAMIAST 10 WPISAC DLUGOSC GENUUU!!!!!
+                this.updateIndex((int) (Math.random() * (genLength + 1))); // ZAMIAST 10 WPISAC DLUGOSC GENUUU!!!!!
             }
             else{
                 this.updateIndex(1);
