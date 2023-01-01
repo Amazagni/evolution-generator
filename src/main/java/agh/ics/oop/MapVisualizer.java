@@ -1,6 +1,5 @@
 package agh.ics.oop;
 
-import com.sun.tools.jconsole.JConsoleContext;
 
 /**
  * The map visualizer converts the {@link IWorldMap} map into a string

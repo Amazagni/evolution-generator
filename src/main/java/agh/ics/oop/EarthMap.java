@@ -1,6 +1,5 @@
 package agh.ics.oop;
 
-import com.sun.tools.jconsole.JConsoleContext;
 
 import java.util.*;
 
@@ -43,10 +42,8 @@ public class EarthMap implements IWorldMap {
 
     @Override
     public Object objectAt(Vector2d position) {
-         if(this.animals.get(position) != null){
-             return this.animals.get(position);
-         }
-         return this.clumpsOfGrass.get(position);
+         if(this.animals.get(position) == null) return this.clumpsOfGrass.get(position);
+         else return this.animals.get(position).get(0);
     }
 
     public void placeGrass(Vector2d position){

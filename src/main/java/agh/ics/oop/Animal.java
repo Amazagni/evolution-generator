@@ -2,7 +2,7 @@ package agh.ics.oop;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Random;
-public class Animal implements Comparable<Animal> {
+public class Animal implements Comparable<Animal>, IGameElement {
     private MapDirection direction;
     private ArrayList<Integer> genes;
     private int genIndex = 0;
@@ -35,6 +35,13 @@ public class Animal implements Comparable<Animal> {
     public int getGenAt(int a){
         return this.genes.get(a);
     }
+
+    @Override
+    public boolean isAt(Vector2d pos) {
+        if (pos.equals(this.position)) return true;
+        return false;
+    }
+
     public Vector2d getPosition(){
         return this.position;
     }

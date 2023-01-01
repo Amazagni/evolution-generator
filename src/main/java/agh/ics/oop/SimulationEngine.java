@@ -4,6 +4,7 @@ import java.util.*;
 
 public class SimulationEngine implements Runnable {
     private List<Animal> animals = new ArrayList<>();
+    private List<IAnimalMovementObserver> observers = new ArrayList<IAnimalMovementObserver>();
     private int grassEnergyGain = 40;//będzie trzeba to przypisać w konstruktorze
     private int dailyEnergyLoss = 5;  // - || -
     private int startingNumberOfGrass = 10;// - || -
@@ -11,7 +12,7 @@ public class SimulationEngine implements Runnable {
     private int startingEnergy = 120;//   // - || -
     private int energyUsedToCreateAnimal = 30; //- || - ilosc energi ktora rodzice łącznie tracą przy rozmnażaniu
     private int minEnergyToReproduce = 25; // - || - min energia zeby zwierze moglo sie rozmnazac ps trzeba zmienić tą nazwe xd
-    private int genLength = 10; //Nie pamiętam ile jak długa miała być ta tablica
+    private int genLength = 10; //Nie pamiętam ile jak długa miała być ta tablica -- to ma być parametr wejściowy
 
     // Do statystyk
     private int day = 0;
@@ -28,7 +29,7 @@ public class SimulationEngine implements Runnable {
     private ArrayList<ToxicCorpsesField> corpses;
     private boolean earth = false;
     private boolean hellPortal = true;
-    private boolean forestedEquators = true;
+    public boolean forestedEquators = true;
     private boolean toxicCorpses = false;
     private boolean randomMutation = true;
     private boolean slightlyChangedMutation = false;
@@ -38,8 +39,17 @@ public class SimulationEngine implements Runnable {
     //zmienne dotyczące wyboru mapy      |
     private EarthMap map;
 
-    public SimulationEngine(EarthMap map, int startingNumberOfAnimals){
+    public SimulationEngine(
+            EarthMap map, int startingNumberOfAnimals, int startingNumberOfGrass, int startingEnergy,
+            int dailyEnergyLoss, int grassEnergyGain, int energyUsedToCreateAnimal, int minEnergyToReproduce, int genLength){
         this.map = map;
+        this.startingNumberOfGrass = startingNumberOfGrass;
+        this.startingEnergy = startingEnergy;
+        this.dailyEnergyLoss = dailyEnergyLoss;
+        this.grassEnergyGain = grassEnergyGain;
+        this.energyUsedToCreateAnimal = energyUsedToCreateAnimal;
+        this.minEnergyToReproduce = minEnergyToReproduce;
+        this.genLength = genLength;
         for(int i = 0; i < startingNumberOfAnimals; i++){
             generateRandomAnimal();
         }
@@ -60,6 +70,26 @@ public class SimulationEngine implements Runnable {
         }
         generateRandomGrass(startingNumberOfGrass);
     }
+
+    public Vector2d[] getEquatorCords() {
+        if(this.forestedEquators) {
+            Vector2d[] cords = new Vector2d[2];
+            cords[0] = this.equatorLowerLeft;
+            cords[1] = this.equatorUpperRight;
+            return cords;
+        }
+        return null;
+    }
+
+    public void addObserver(IAnimalMovementObserver application) {this.observers.add(application);}
+
+    public boolean isForestTile(Vector2d position) {
+        if (this.forestedEquators) {
+            if(position.follows(this.equatorLowerLeft) && position.precedes(this.equatorUpperRight)) return true;
+        }
+        return false;
+    }
+
     private void generateRandomAnimal(){
         int maxX = this.map.getUpperRight().x;
         int maxY = this.map.getUpperRight().y;
@@ -302,6 +332,9 @@ public class SimulationEngine implements Runnable {
 
 
             }
+
+        // observers
+        for (IAnimalMovementObserver observer: observers) {observer.animalMoved();}
         }
 
     }
