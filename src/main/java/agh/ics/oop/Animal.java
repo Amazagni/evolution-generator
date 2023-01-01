@@ -13,10 +13,11 @@ public class Animal implements Comparable<Animal>, IGameElement {
     private int genLength = 10;
 
 
-    public Animal(Vector2d startingPosition, ArrayList<Integer> genes,int energy){
+    public Animal(Vector2d startingPosition, ArrayList<Integer> genes, int energy, int genLength){
         this.energy = energy;
         this.position = startingPosition;
         this.genes = genes;
+        this.genLength = genLength;
         //losowo generuje początkowy kierunek zwierzaka
         this.direction = MapDirection.NORTH.toMapDirection((int)(Math.random()*8));
     }
@@ -127,7 +128,7 @@ public class Animal implements Comparable<Animal>, IGameElement {
         if(slightlyChangedGenesOrder){
             int randomPercent = (int)(Math.random()*10); //wartosci 0,1,...,9
             if(randomPercent <= 1) {
-                this.updateIndex((int) (Math.random() * (genLength + 1))); // ZAMIAST 10 WPISAC DLUGOSC GENUUU!!!!!
+                this.updateIndex((int) (Math.random() * genLength)); // ZAMIAST 10 WPISAC DLUGOSC GENUUU!!!!!
             }
             else{
                 this.updateIndex(1);

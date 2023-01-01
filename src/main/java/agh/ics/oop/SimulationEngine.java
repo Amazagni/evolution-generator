@@ -45,7 +45,8 @@ public class SimulationEngine implements Runnable {
 
     public SimulationEngine(
             EarthMap map, int startingNumberOfAnimals, int startingNumberOfGrass, int startingEnergy,
-            int dailyEnergyLoss, int grassEnergyGain, int energyUsedToCreateAnimal, int minEnergyToReproduce, int genLength){
+            int dailyEnergyLoss, int grassEnergyGain, int energyUsedToCreateAnimal, int minEnergyToReproduce, int genLength,
+            int minNumberOfMutations, int maxNumberOfMutations){
         this.map = map;
         this.startingNumberOfGrass = startingNumberOfGrass;
         this.startingEnergy = startingEnergy;
@@ -54,6 +55,8 @@ public class SimulationEngine implements Runnable {
         this.energyUsedToCreateAnimal = energyUsedToCreateAnimal;
         this.minEnergyToReproduce = minEnergyToReproduce;
         this.genLength = genLength;
+        this.minNumberOfMutations = minNumberOfMutations;
+        this.maxNumberOfMutations = maxNumberOfMutations;
         for(int i = 0; i < startingNumberOfAnimals; i++){
             generateRandomAnimal();
         }
@@ -107,7 +110,7 @@ public class SimulationEngine implements Runnable {
         for(int i = 0; i < this.genLength; i++){
             genes.add((int)(Math.random()*8));
         }
-        Animal animal = new Animal(position,genes,this.startingEnergy);
+        Animal animal = new Animal(position,genes,this.startingEnergy, this.genLength);
         this.animals.add(animal);
         this.map.place(animal);
     }
@@ -321,7 +324,7 @@ public class SimulationEngine implements Runnable {
                         secondParent.updateEnergy(-(this.energyUsedToCreateAnimal - firstParentEnergyLoss));
 
                         //dodajemy nowe zwierze
-                        Animal child = new Animal(position,childGenes,this.energyUsedToCreateAnimal);
+                        Animal child = new Animal(position,childGenes,this.energyUsedToCreateAnimal, genLength);
                         animalList.add(child);
                         this.animals.add(child);
                         }

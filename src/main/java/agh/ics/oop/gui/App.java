@@ -14,6 +14,7 @@ import javafx.scene.layout.GridPane;
 
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.io.FileInputStream;
@@ -74,6 +75,8 @@ public class App extends Application implements IAnimalMovementObserver {
         Label reproductionEnergyLabel = new Label("Energy passed upon new animal by parents: ");
         Label minReproduceEnergyLabel = new Label("Minimum energy needed for reproduction: ");
         Label genLengthLabel = new Label("Number of genes in genome: ");
+        Label minNumberOfMutationsLabel = new Label("Minimum number of mutations: ");
+        Label maxNumberOfMutationsLabel = new Label("Minimum number of mutations: ");
         Label parametersLabel = new Label("Set your simulation's parameters");
 
 //        LABELS SETTINGS
@@ -102,6 +105,10 @@ public class App extends Application implements IAnimalMovementObserver {
         minReproduceEnergyLabel.setPadding(new Insets(0, 10, 0, 0));
         genLengthLabel.setTranslateY(4);
         genLengthLabel.setPadding(new Insets(0, 10, 0, 0));
+        minNumberOfMutationsLabel.setPadding(new Insets(0, 10, 0, 0));
+        minNumberOfMutationsLabel.setTranslateY(4);
+        maxNumberOfMutationsLabel.setPadding(new Insets(0, 10, 0, 0));
+        maxNumberOfMutationsLabel.setTranslateY(4);
         parametersLabel.setFont(new Font(24));
         parametersLabel.setPadding(new Insets(0, 0, 20, 0));
 
@@ -116,6 +123,8 @@ public class App extends Application implements IAnimalMovementObserver {
         TextField reproductionEnergy = new TextField("30");
         TextField minReproductionEnergy = new TextField("25");
         TextField genLength = new TextField("32");
+        TextField minNumberOfMutations = new TextField("3");
+        TextField maxNumberOfMutations = new TextField("5");
 
 //        TEXT FIELDS SETTINGS
         mapWidth.setMaxWidth(60);
@@ -128,6 +137,9 @@ public class App extends Application implements IAnimalMovementObserver {
         reproductionEnergy.setMaxWidth(60);
         minReproductionEnergy.setMaxWidth(60);
         genLength.setMaxWidth(60);
+        minNumberOfMutations.setMaxWidth(60);
+        maxNumberOfMutations.setMaxWidth(60);
+
 //        RADIO BUTTONS
         ToggleGroup mapRadios = new ToggleGroup();
         RadioButton earth = new RadioButton("Earth");
@@ -175,8 +187,8 @@ public class App extends Application implements IAnimalMovementObserver {
 
 //        HBOX'ES AND VBOX'ES
         VBox nameWithImage = new VBox(name, mainImageView, authors);
-        nameWithImage.setTranslateX(50);
-        nameWithImage.setTranslateY(100);
+        nameWithImage.setTranslateX(100);
+        nameWithImage.setTranslateY(80);
         HBox mapWidthBox = new HBox(mapWidthLabel, mapWidth);
         mapWidthBox.setPadding(new Insets(10, 0, 10, 0));
         HBox mapHeightBox = new HBox(mapHeightLabel, mapHeight);
@@ -205,20 +217,24 @@ public class App extends Application implements IAnimalMovementObserver {
         mutationRadiosBox.setPadding(new Insets(0, 0, 10, 0));
         HBox behaviourRadiosBox = new HBox(following, crazy);
         behaviourRadiosBox.setPadding(new Insets(0, 0, 10, 0));
+        HBox minNumberOfMutationsBox = new HBox(minNumberOfMutationsLabel, minNumberOfMutations);
+        minNumberOfMutationsBox.setPadding(new Insets(0, 0, 10, 0));
+        HBox maxNumberOfMutationsBox = new HBox(maxNumberOfMutationsLabel, maxNumberOfMutations);
+        maxNumberOfMutationsBox.setPadding(new Insets(0, 0, 10, 0));
         HBox buttonsBox = new HBox(startSimulationButton, stopSimulationButton);
 
         VBox settings = new VBox(
                 parametersLabel, mapWidthBox, mapHeightBox, animalsNumberBox, grassNumberBox,
                 startingEnergyBox, moveEnergyBox, eatEnergyBox, reproductionEnergyBox,
-                minReproductionEnergyBox, genLengthBox, mapRadiosBox, mapTypeRadiosBox,
-                mutationRadiosBox, behaviourRadiosBox, setParametersButton
+                minReproductionEnergyBox, genLengthBox, minNumberOfMutationsBox, maxNumberOfMutationsBox,
+                mapRadiosBox, mapTypeRadiosBox, mutationRadiosBox, behaviourRadiosBox, setParametersButton
             );
 
         HBox firstView = new HBox(nameWithImage, settings);
         VBox appBox = new VBox(firstView);
 
-        settings.setTranslateX(300);
-        settings.setTranslateY(118);
+        settings.setTranslateX(350);
+        settings.setTranslateY(90);
 
         VBox mapBox = new VBox(this.mapGridPane);
         mapBox.setAlignment(Pos.CENTER);
@@ -252,12 +268,15 @@ public class App extends Application implements IAnimalMovementObserver {
                     Integer.parseInt(eatEnergy.getText()),
                     Integer.parseInt(reproductionEnergy.getText()),
                     Integer.parseInt(minReproductionEnergy.getText()),
-                    Integer.parseInt(genLength.getText()));
+                    Integer.parseInt(genLength.getText()),
+                    Integer.parseInt(minNumberOfMutations.getText()),
+                    Integer.parseInt(maxNumberOfMutations.getText())
+                    );
             this.engine.addObserver(this);
             Thread engineThread = new Thread(this.engine);
             engineThread.start();
             drawMap(this.map, this.mapGridPane, false);
-            Scene simulationScene = new Scene(mapBox, 720, 480);
+            Scene simulationScene = new Scene(mapBox, 1280, 960);
             Stage simulationStage = new Stage();
             simulationStage.setScene(simulationScene);
             simulationStage.show();
