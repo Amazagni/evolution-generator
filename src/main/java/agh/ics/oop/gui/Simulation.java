@@ -6,6 +6,8 @@ import javafx.application.Platform;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
 import javafx.scene.layout.*;
@@ -21,12 +23,12 @@ public class Simulation implements IAnimalMovementObserver{
     private EarthMap map;
     public Scene simulationScene;
 
-    private final XYChart.Series<Number, Number> animalsChartSeries = new XYChart.Series<>();
-    private final XYChart.Series<Number, Number> plantsChartSeries = new XYChart.Series<>();
+    private final XYChart.Series<Number, Number> animalsNumberChartSeries = new XYChart.Series<>();
+    private final XYChart.Series<Number, Number> grassNumberChartSeries = new XYChart.Series<>();
+    private final XYChart.Series<Number, Number> freeSpotsChartSeries = new XYChart.Series<>();
     private final XYChart.Series<Number, Number> avgEnergyChartSeries = new XYChart.Series<>();
-    private final XYChart.Series<Number, Number> avgKidsChartSeries = new XYChart.Series<>();
     private final XYChart.Series<Number, Number> avgLifeSpanChartSeries = new XYChart.Series<>();
-    private ArrayList<XYChart.Series<Number, Number>> chartSeriesArrW1;
+    private ArrayList<XYChart.Series<Number, Number>> chartSeriesArr;
 
     private void drawMap(EarthMap map, GridPane mapGridPane, boolean flag) {
         mapGridPane.setGridLinesVisible(false);
@@ -88,6 +90,34 @@ public class Simulation implements IAnimalMovementObserver{
         simulationStage.setScene(this.simulationScene);
         simulationStage.show();
 
+//       CHARTS
+        final NumberAxis AxisX = new NumberAxis();
+        final NumberAxis AxisY = new NumberAxis();
+        final LineChart<Number, Number> chart = new LineChart<>(AxisX, AxisY);
+        chart.setTitle("Statistics");
+
+        this.animalsNumberChartSeries.setName("Animal count");
+        this.grassNumberChartSeries.setName("Grass count");
+        this.freeSpotsChartSeries.setName("Free spots");
+        this.avgEnergyChartSeries.setName("Average energy");
+        this.avgLifeSpanChartSeries.setName("Average life span");
+
+        chart.getData().add(this.animalsNumberChartSeries);
+        chart.getData().add(this.grassNumberChartSeries);
+        chart.getData().add(this.freeSpotsChartSeries);
+        chart.getData().add(this.avgEnergyChartSeries);
+        chart.getData().add(this.avgLifeSpanChartSeries);
+
+        this.chartSeriesArr = new ArrayList<>() {
+            {
+                add(animalsNumberChartSeries);
+                add(grassNumberChartSeries);
+                add(freeSpotsChartSeries);
+                add(avgEnergyChartSeries);
+                add(avgLifeSpanChartSeries);
+            }
+        };
+
         startSimulationButton.setOnAction(event -> {
             // resume the simulation
             this.engine.Start();
@@ -110,11 +140,16 @@ public class Simulation implements IAnimalMovementObserver{
     @Override
     public void animalMoved() {
         Platform.runLater(() -> {
-//            UPDATE EVERY MAP
+//            UPDATING MAP
             mapGridPane.getChildren().clear();
             drawMap(this.map, this.mapGridPane, true);
 
-//            UPDATE THE CHARTS
+//            UPDATING CHARTS
+//            this.animalsNumberChartSeries.getData().add(new XYChart.Data<>(this.engine., this.engine1.countAnimals()));
+//            this.grassNumberChartSeries.getData().add(new XYChart.Data<>(this.eraCount, this.map1.getTotalGrassAmount()));
+//            this.freeSpotsChartSeries.getData().add(new XYChart.Data<>(this.eraCount, this.engine1.getAvgLifeSpan()));
+//            this.avgEnergyChartSeries.getData().add(new XYChart.Data<>(this.eraCount, this.engine1.getAvgEnergy()));
+//            this.avgLifeSpanChartSeries.getData().add(new XYChart.Data<>(this.eraCount, this.engine1.getAvgChildrenAmount()));
         });
     }
 }

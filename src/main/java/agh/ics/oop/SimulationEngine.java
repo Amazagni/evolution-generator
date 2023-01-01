@@ -31,6 +31,11 @@ public class SimulationEngine implements Runnable {
     private int totalBorn = 0;
     private int bornToday = 0;
 
+    public int getCurrentDayCount() { return this.day; }
+    public int getTotalDeadNumber() { return this.totalDead; }
+    public int getAverageEnergyLevel() { return this.averageEnergyLevel; }
+    public int getAverageLifeLength() { return this.averageLifeLength; }
+
 
     //zmienne dotyczace wyboru mapy     |
     //(trzeba dopisać w konstruktorze)  V
