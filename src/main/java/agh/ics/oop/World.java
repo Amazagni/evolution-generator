@@ -3,6 +3,9 @@ package agh.ics.oop;
 import agh.ics.oop.gui.App;
 import javafx.application.Application;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class World {
     public static void main(String[] args){
 //        TEST RUN WITHOUT GUI
@@ -11,6 +14,7 @@ public class World {
 //        engine.run();
 
 //        RUN WITH GUI
+
         Application.launch(App.class, args);
     }
 }
