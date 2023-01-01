@@ -17,6 +17,7 @@ public class SimulationEngine implements Runnable {
     //DOPISANE
     private int minNumberOfMutations = 3;
     private int maxNumberOfMutations = 5;
+    public boolean isRunning = true;
 
     // Do statystyk
     private int day = 0;
@@ -232,10 +233,16 @@ public class SimulationEngine implements Runnable {
 
     }
 
+    public void Start(){
+        this.isRunning = true;
+    }
+    public void Stop(){
+        this.isRunning = false;
+    }
     @Override
     public void run() {
-
-        while(true) {
+        while(true){
+        while(this.isRunning) {
             this.totalBorn += this.bornToday;
             this.totalDead += this.deadToday;
 
@@ -358,8 +365,7 @@ public class SimulationEngine implements Runnable {
 
         // observers
         for (IAnimalMovementObserver observer: observers) {observer.animalMoved();}
-        }
-
+        }}
     }
 }
 //obie wersje wyjscia zwierzęcia poza mapę
