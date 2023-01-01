@@ -116,7 +116,7 @@ public class Simulation implements IAnimalMovementObserver{
         Thread engineThread = new Thread(this.engine);
         engineThread.start();
         drawMap(this.map, this.mapGridPane, false);
-        if(this.map.getUpperRight().x < 25) buttonsBox.setTranslateX(5 + this.map.getUpperRight().x*25/2);
+        if(this.map.getUpperRight().x < 13) buttonsBox.setTranslateX(5 + this.map.getUpperRight().x*50/2);
         else buttonsBox.setTranslateX(290);
         this.simulationScene = new Scene(viewBox, 1280, 960);
         Stage simulationStage = new Stage();
@@ -150,7 +150,7 @@ public class Simulation implements IAnimalMovementObserver{
             drawMap(this.map, this.mapGridPane, true);
 
 //            UPDATING CHARTS
-            this.animalsNumberChartSeries.getData().add(new XYChart.Data<>(this.engine.getCurrentDayCount(), this.map.getAnimalsCount()));
+            this.animalsNumberChartSeries.getData().add(new XYChart.Data<>(this.engine.getCurrentDayCount(), this.engine.getAnimalsCount()));
             this.grassNumberChartSeries.getData().add(new XYChart.Data<>(this.engine.getCurrentDayCount(), this.map.getGrassCount()));
             this.freeSpotsChartSeries.getData().add(new XYChart.Data<>(this.engine.getCurrentDayCount(), this.map.getFreeSpotsCount()));
             this.avgEnergyChartSeries.getData().add(new XYChart.Data<>(this.engine.getCurrentDayCount(), this.engine.getAverageEnergyLevel()));

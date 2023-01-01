@@ -150,6 +150,8 @@ public class SimulationEngine implements Runnable {
 
     }
 
+    public int getAnimalsCount() { return this.animals.size(); }
+
     //generowanie trawy tylko dla mapy z równikiemmm
     //drugą trzeba bedzie dopisać
     private void generateRandomGrass(int n){
