@@ -242,7 +242,12 @@ public class SimulationEngine implements Runnable {
     @Override
     public void run() {
         while(true){
-        while(this.isRunning) {
+            try {
+                Thread.sleep(200);
+            } catch (InterruptedException e) {
+                System.out.println("Wystąpił błąd: "+ e);
+            }
+            while(this.isRunning) {
             this.totalBorn += this.bornToday;
             this.totalDead += this.deadToday;
 
