@@ -154,6 +154,16 @@ public class App extends Application {
         crazy.setToggleGroup(behaviourRadios);
         crazy.setTranslateX(8);
 
+        ToggleGroup configRadios = new ToggleGroup();
+        RadioButton radio1 = new RadioButton("1");
+        radio1.setSelected(true);
+        radio1.setToggleGroup(configRadios);
+        RadioButton radio2 = new RadioButton("2");
+        radio2.setPadding(new Insets(0, 20, 0, 20));
+        radio2.setToggleGroup(configRadios);
+        RadioButton radio3 = new RadioButton("3");
+        radio3.setToggleGroup(configRadios);
+
 //        BUTTONS
         Button setParametersButton = new Button("Start new simulation");
         setParametersButton.setTranslateX(130);
@@ -202,9 +212,10 @@ public class App extends Application {
         minNumberOfMutationsBox.setPadding(new Insets(0, 0, 10, 0));
         HBox maxNumberOfMutationsBox = new HBox(maxNumberOfMutationsLabel, maxNumberOfMutations);
         maxNumberOfMutationsBox.setPadding(new Insets(0, 0, 10, 0));
+        HBox radiosConfigBox = new HBox(radio1, radio2, radio3);
 
         VBox settings = new VBox(
-                parametersLabel, mapWidthBox, mapHeightBox, animalsNumberBox, grassNumberBox,
+                parametersLabel, radiosConfigBox, mapWidthBox, mapHeightBox, animalsNumberBox, grassNumberBox,
                 dailyGrassGrowthBox, startingEnergyBox, moveEnergyBox, eatEnergyBox, reproductionEnergyBox,
                 minReproductionEnergyBox, genLengthBox, minNumberOfMutationsBox, maxNumberOfMutationsBox,
                 mapRadiosBox, mapTypeRadiosBox, mutationRadiosBox, behaviourRadiosBox, setParametersButton
