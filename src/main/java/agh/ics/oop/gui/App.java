@@ -3,6 +3,8 @@ package agh.ics.oop.gui;
 import agh.ics.oop.*;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -163,6 +165,82 @@ public class App extends Application {
         radio2.setToggleGroup(configRadios);
         RadioButton radio3 = new RadioButton("3");
         radio3.setToggleGroup(configRadios);
+
+//        CONFIG RADIOS FUNCTIONALITY
+        configRadios.selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
+            @Override
+            public void changed(ObservableValue<? extends Toggle> observable, Toggle oldValue, Toggle newValue) {
+                if(configRadios.getSelectedToggle().equals(radio1)) {
+                    mapWidth.setText("dupa");
+                    mapHeight.setText("dupa");
+                    animalsNumber.setText("dupa");
+                    grassNumber.setText("dupa");
+                    dailyGrassGrowth.setText("dupa");
+                    startingEnergy.setText("dupa");
+                    moveEnergy.setText("dupa");
+                    eatEnergy.setText("dupa");
+                    reproductionEnergy.setText("dupa");
+                    minReproductionEnergy.setText("dupa");
+                    genLength.setText("dupa");
+                    minNumberOfMutations.setText("dupa");
+                    maxNumberOfMutations.setText("dupa");
+                    earth.setSelected(false);
+                    hellPortal.setSelected(true);
+                    forest.setSelected(true);
+                    corpses.setSelected(false);
+                    slight.setSelected(true);
+                    random.setSelected(false);
+                    following.setSelected(true);
+                    crazy.setSelected(false);
+                }
+                else if(configRadios.getSelectedToggle().equals(radio2)) {
+                    mapWidth.setText("dupa");
+                    mapHeight.setText("dupa");
+                    animalsNumber.setText("dupa");
+                    grassNumber.setText("dupa");
+                    dailyGrassGrowth.setText("dupa");
+                    startingEnergy.setText("dupa");
+                    moveEnergy.setText("dupa");
+                    eatEnergy.setText("dupa");
+                    reproductionEnergy.setText("dupa");
+                    minReproductionEnergy.setText("dupa");
+                    genLength.setText("dupa");
+                    minNumberOfMutations.setText("dupa");
+                    maxNumberOfMutations.setText("dupa");
+                    earth.setSelected(false);
+                    hellPortal.setSelected(true);
+                    forest.setSelected(true);
+                    corpses.setSelected(false);
+                    slight.setSelected(true);
+                    random.setSelected(false);
+                    following.setSelected(true);
+                    crazy.setSelected(false);
+                }
+                else if(configRadios.getSelectedToggle().equals(radio3)) {
+                    mapWidth.setText("dupa");
+                    mapHeight.setText("dupa");
+                    animalsNumber.setText("dupa");
+                    grassNumber.setText("dupa");
+                    dailyGrassGrowth.setText("dupa");
+                    startingEnergy.setText("dupa");
+                    moveEnergy.setText("dupa");
+                    eatEnergy.setText("dupa");
+                    reproductionEnergy.setText("dupa");
+                    minReproductionEnergy.setText("dupa");
+                    genLength.setText("dupa");
+                    minNumberOfMutations.setText("dupa");
+                    maxNumberOfMutations.setText("dupa");
+                    earth.setSelected(false);
+                    hellPortal.setSelected(true);
+                    forest.setSelected(true);
+                    corpses.setSelected(false);
+                    slight.setSelected(true);
+                    random.setSelected(false);
+                    following.setSelected(true);
+                    crazy.setSelected(false);
+                }
+            }
+        });
 
 //        BUTTONS
         Button setParametersButton = new Button("Start new simulation");
