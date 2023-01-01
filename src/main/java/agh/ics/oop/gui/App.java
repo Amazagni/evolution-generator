@@ -65,10 +65,7 @@ public class App extends Application implements IAnimalMovementObserver{
 
 //        LABELS
         Label name = new Label("Evolution Simulation");
-        name.setFont(new Font(48));
-        name.setPadding(new Insets(0, 0, 20, 0));
-        name.setAlignment(Pos.CENTER);
-        name.setTextAlignment(TextAlignment.CENTER);
+        Label authors = new Label("by Marcin Chudy and Filip Dziurdzia");
         Label mapWidthLabel = new Label("Map width: ");
         Label mapHeightLabel = new Label("Map height: ");
         Label animalsNumberLabel = new Label("Starting number of animals: ");
@@ -79,6 +76,36 @@ public class App extends Application implements IAnimalMovementObserver{
         Label reproductionEnergyLabel = new Label("Energy passed upon new animal by parents: ");
         Label minReproduceEnergyLabel = new Label("Minimum energy needed for reproduction: ");
         Label genLengthLabel = new Label("Number of genes in genome: ");
+        Label parametersLabel = new Label("Set your simulation's parameters");
+
+//        LABELS SETTINGS
+        name.setFont(new Font(48));
+        name.setPadding(new Insets(0, 0, 20, 0));
+        authors.setFont(new Font(20));
+        authors.setTranslateX(55);
+        authors.setPadding(new Insets(20, 0, 0, 0));
+        mapHeightLabel.setTranslateY(5);
+        mapHeightLabel.setPadding(new Insets(0, 10, 0, 0));
+        mapWidthLabel.setTranslateY(5);
+        mapWidthLabel.setPadding(new Insets(0, 10, 0, 0));
+        animalsNumberLabel.setTranslateY(5);
+        animalsNumberLabel.setPadding(new Insets(0, 10, 0, 0));
+        grassNumberLabel.setTranslateY(5);
+        grassNumberLabel.setPadding(new Insets(0, 10, 0, 0));
+        startingEnergyLabel.setTranslateY(5);
+        startingEnergyLabel.setPadding(new Insets(0, 10, 0, 0));
+        moveEnergyLabel.setTranslateY(5);
+        moveEnergyLabel.setPadding(new Insets(0, 10, 0, 0));
+        eatEnergyLabel.setTranslateY(5);
+        eatEnergyLabel.setPadding(new Insets(0, 10, 0, 0));
+        reproductionEnergyLabel.setTranslateY(5);
+        reproductionEnergyLabel.setPadding(new Insets(0, 10, 0, 0));
+        minReproduceEnergyLabel.setTranslateY(5);
+        minReproduceEnergyLabel.setPadding(new Insets(0, 10, 0, 0));
+        genLengthLabel.setTranslateY(5);
+        genLengthLabel.setPadding(new Insets(0, 10, 0, 0));
+        parametersLabel.setFont(new Font(24));
+        parametersLabel.setPadding(new Insets(0, 0, 20, 0));
 
 //        TEXT FIELDS
         TextField mapWidth = new TextField("15");
@@ -110,6 +137,7 @@ public class App extends Application implements IAnimalMovementObserver{
         earth.setSelected(true);
         earth.setToggleGroup(mapRadios);
         hellPortal.setToggleGroup(mapRadios);
+        hellPortal.setTranslateX(120);
 
         ToggleGroup mapTypeRadios = new ToggleGroup();
         RadioButton forest = new RadioButton("Equatorial Forest");
@@ -117,6 +145,7 @@ public class App extends Application implements IAnimalMovementObserver{
         forest.setSelected(true);
         forest.setToggleGroup(mapTypeRadios);
         corpses.setToggleGroup(mapTypeRadios);
+        corpses.setTranslateX(58);
 
         ToggleGroup mutationRadios = new ToggleGroup();
         RadioButton slight = new RadioButton("Slight gen mutations");
@@ -124,6 +153,7 @@ public class App extends Application implements IAnimalMovementObserver{
         slight.setSelected(true);
         slight.setToggleGroup(mutationRadios);
         random.setToggleGroup(mutationRadios);
+        random.setTranslateX(38);
 
         ToggleGroup behaviourRadios = new ToggleGroup();
         RadioButton following = new RadioButton("Animal follows its genome");
@@ -131,9 +161,12 @@ public class App extends Application implements IAnimalMovementObserver{
         following.setSelected(true);
         following.setToggleGroup(behaviourRadios);
         crazy.setToggleGroup(behaviourRadios);
+        crazy.setTranslateX(8);
 
 //        BUTTONS
         Button setParametersButton = new Button("Set");
+        setParametersButton.setTranslateX(160);
+        setParametersButton.setTranslateY(20);
         Button startSimulationButton = new Button("Start simulation");
         Button stopSimulationButton = new Button("Stop simulation");
 
@@ -143,28 +176,48 @@ public class App extends Application implements IAnimalMovementObserver{
         mainImageView.setX(20);
 
 //        HBOX'ES AND VBOX'ES
-        VBox nameWithImage = new VBox(name, mainImageView, startSimulationButton);
+        VBox nameWithImage = new VBox(name, mainImageView, authors);
+        nameWithImage.setTranslateX(50);
+        nameWithImage.setTranslateY(100);
         HBox mapWidthBox = new HBox(mapWidthLabel, mapWidth);
+        mapWidthBox.setPadding(new Insets(10, 0, 10, 0));
         HBox mapHeightBox = new HBox(mapHeightLabel, mapHeight);
+        mapHeightBox.setPadding(new Insets(0, 0, 10, 0));
         HBox animalsNumberBox = new HBox(animalsNumberLabel, animalsNumber);
+        animalsNumberBox.setPadding(new Insets(0, 0, 10, 0));
         HBox grassNumberBox = new HBox(grassNumberLabel, grassNumber);
+        grassNumberBox.setPadding(new Insets(0, 0, 10, 0));
         HBox startingEnergyBox = new HBox(startingEnergyLabel, startingEnergy);
+        startingEnergyBox.setPadding(new Insets(0, 0, 10, 0));
         HBox moveEnergyBox = new HBox(moveEnergyLabel, moveEnergy);
+        moveEnergyBox.setPadding(new Insets(0, 0, 10, 0));
         HBox eatEnergyBox = new HBox(eatEnergyLabel, eatEnergy);
+        eatEnergyBox.setPadding(new Insets(0, 0, 10, 0));
         HBox reproductionEnergyBox = new HBox(reproductionEnergyLabel, reproductionEnergy);
+        reproductionEnergyBox.setPadding(new Insets(0, 0, 10, 0));
         HBox minReproductionEnergyBox = new HBox(minReproduceEnergyLabel, minReproductionEnergy);
+        minReproductionEnergyBox.setPadding(new Insets(0, 0, 10, 0));
         HBox genLengthBox = new HBox(genLengthLabel, genLength);
+        genLengthBox.setPadding(new Insets(0, 0, 10, 0));
         HBox mapRadiosBox = new HBox(earth, hellPortal);
+        mapRadiosBox.setPadding(new Insets(10, 0, 10, 0));
         HBox mapTypeRadiosBox = new HBox(forest, corpses);
+        mapTypeRadiosBox.setPadding(new Insets(0, 0, 10, 0));
         HBox mutationRadiosBox = new HBox(slight, random);
+        mutationRadiosBox.setPadding(new Insets(0, 0, 10, 0));
         HBox behaviourRadiosBox = new HBox(following, crazy);
+        behaviourRadiosBox.setPadding(new Insets(0, 0, 10, 0));
+        HBox buttonsBox = new HBox(startSimulationButton, stopSimulationButton);
 
         VBox settings = new VBox(
-                mapWidthBox, mapHeightBox, animalsNumberBox, grassNumberBox,
+                parametersLabel, mapWidthBox, mapHeightBox, animalsNumberBox, grassNumberBox,
                 startingEnergyBox, moveEnergyBox, eatEnergyBox, reproductionEnergyBox,
                 minReproductionEnergyBox, genLengthBox, mapRadiosBox, mapTypeRadiosBox,
-                mutationRadiosBox, behaviourRadiosBox
+                mutationRadiosBox, behaviourRadiosBox, setParametersButton
             );
+
+        settings.setTranslateX(300);
+        settings.setTranslateY(118);
 
         VBox mapBox = new VBox(this.mapGridPane);
         mapBox.setAlignment(Pos.CENTER);
