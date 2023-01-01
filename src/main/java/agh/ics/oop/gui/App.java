@@ -41,7 +41,7 @@ public class App extends Application implements IAnimalMovementObserver {
             Vector2d currentPosition = new Vector2d(0, 0);
             for (int i = 0; i <= width; i++) {
                 for (int j = 0; j <= height; j++) {
-                    currentPosition = new Vector2d(i, j);
+                    currentPosition = new Vector2d(i, height - j);
                     StackPane tile = generator.GUIMapElement((IGameElement) map.objectAt(currentPosition), currentPosition, engine);
                     mapGridPane.add(tile, i, j);
                     GridPane.setHalignment(tile, HPos.CENTER);
@@ -82,25 +82,25 @@ public class App extends Application implements IAnimalMovementObserver {
         authors.setFont(new Font(20));
         authors.setTranslateX(52);
         authors.setPadding(new Insets(20, 0, 0, 0));
-        mapHeightLabel.setTranslateY(5);
+        mapHeightLabel.setTranslateY(4);
         mapHeightLabel.setPadding(new Insets(0, 10, 0, 0));
-        mapWidthLabel.setTranslateY(5);
+        mapWidthLabel.setTranslateY(4);
         mapWidthLabel.setPadding(new Insets(0, 10, 0, 0));
-        animalsNumberLabel.setTranslateY(5);
+        animalsNumberLabel.setTranslateY(4);
         animalsNumberLabel.setPadding(new Insets(0, 10, 0, 0));
-        grassNumberLabel.setTranslateY(5);
+        grassNumberLabel.setTranslateY(4);
         grassNumberLabel.setPadding(new Insets(0, 10, 0, 0));
-        startingEnergyLabel.setTranslateY(5);
+        startingEnergyLabel.setTranslateY(4);
         startingEnergyLabel.setPadding(new Insets(0, 10, 0, 0));
-        moveEnergyLabel.setTranslateY(5);
+        moveEnergyLabel.setTranslateY(4);
         moveEnergyLabel.setPadding(new Insets(0, 10, 0, 0));
-        eatEnergyLabel.setTranslateY(5);
+        eatEnergyLabel.setTranslateY(4);
         eatEnergyLabel.setPadding(new Insets(0, 10, 0, 0));
-        reproductionEnergyLabel.setTranslateY(5);
+        reproductionEnergyLabel.setTranslateY(4);
         reproductionEnergyLabel.setPadding(new Insets(0, 10, 0, 0));
-        minReproduceEnergyLabel.setTranslateY(5);
+        minReproduceEnergyLabel.setTranslateY(4);
         minReproduceEnergyLabel.setPadding(new Insets(0, 10, 0, 0));
-        genLengthLabel.setTranslateY(5);
+        genLengthLabel.setTranslateY(4);
         genLengthLabel.setPadding(new Insets(0, 10, 0, 0));
         parametersLabel.setFont(new Font(24));
         parametersLabel.setPadding(new Insets(0, 0, 20, 0));
@@ -162,8 +162,8 @@ public class App extends Application implements IAnimalMovementObserver {
         crazy.setTranslateX(8);
 
 //        BUTTONS
-        Button setParametersButton = new Button("Set");
-        setParametersButton.setTranslateX(160);
+        Button setParametersButton = new Button("Start new simulation");
+        setParametersButton.setTranslateX(130);
         setParametersButton.setTranslateY(20);
         Button startSimulationButton = new Button("Start simulation");
         Button stopSimulationButton = new Button("Stop simulation");
@@ -230,11 +230,7 @@ public class App extends Application implements IAnimalMovementObserver {
         primaryStage.getIcons().add(Icon);
         primaryStage.setScene(scene);
         primaryStage.show();
-        this.map = new EarthMap(new Vector2d(15, 15));
-        this.engine = new SimulationEngine(this.map, 10);
-        Thread engineThread = new Thread(this.engine);
-        engineThread.start();
-        drawMap(this.map, this.mapGridPane, false);
+
 
 
 //        BUTTONS ACTIONS
@@ -242,9 +238,31 @@ public class App extends Application implements IAnimalMovementObserver {
 //            Getting data from the text areas
 
 //            changing the view
-            firstView.setVisible(false);
-            firstView.setManaged(false);
+//            firstView.setVisible(false);
+//            firstView.setManaged(false);
+            this.map = new EarthMap(new Vector2d(
+                    Integer.parseInt(mapWidth.getText()),
+                    Integer.parseInt(mapHeight.getText())));
+            this.engine = new SimulationEngine(
+                    this.map,
+                    Integer.parseInt(animalsNumber.getText()),
+                    Integer.parseInt(grassNumber.getText()),
+                    Integer.parseInt(startingEnergy.getText()),
+                    Integer.parseInt(moveEnergy.getText()),
+                    Integer.parseInt(eatEnergy.getText()),
+                    Integer.parseInt(reproductionEnergy.getText()),
+                    Integer.parseInt(minReproductionEnergy.getText()),
+                    Integer.parseInt(genLength.getText()));
+            this.engine.addObserver(this);
+            Thread engineThread = new Thread(this.engine);
+            engineThread.start();
+            drawMap(this.map, this.mapGridPane, false);
+            Scene simulationScene = new Scene(mapBox, 720, 480);
+            Stage simulationStage = new Stage();
+            simulationStage.setScene(simulationScene);
+            simulationStage.show();
         });
+
     }
 
     @Override
