@@ -7,6 +7,7 @@ import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -19,12 +20,20 @@ import javafx.stage.Stage;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 
 public class App extends Application implements IAnimalMovementObserver {
 
     private GridPane mapGridPane = new GridPane();
     private SimulationEngine engine;
     private EarthMap map;
+
+    private final XYChart.Series<Number, Number> animalsChartSeries = new XYChart.Series<>();
+    private final XYChart.Series<Number, Number> plantsChartSeries = new XYChart.Series<>();
+    private final XYChart.Series<Number, Number> avgEnergyChartSeries = new XYChart.Series<>();
+    private final XYChart.Series<Number, Number> avgKidsChartSeries = new XYChart.Series<>();
+    private final XYChart.Series<Number, Number> avgLifeSpanChartSeries = new XYChart.Series<>();
+    private ArrayList<XYChart.Series<Number, Number>> chartSeriesArrW1;
 
 //    public void init() {}
 
@@ -292,11 +301,26 @@ public class App extends Application implements IAnimalMovementObserver {
 
         startSimulationButton.setOnAction(event -> {
             // resume the simulation
-            this.engine.Start();
-            startSimulationButton.setVisible(false);
-            startSimulationButton.setManaged(false);
-            stopSimulationButton.setVisible(true);
-            stopSimulationButton.setManaged(true);
+//            this.engine.Start();
+            Simulation simulation = new Simulation(
+                    this,
+                    Integer.parseInt(mapWidth.getText()),
+                    Integer.parseInt(mapHeight.getText()),
+                    Integer.parseInt(animalsNumber.getText()),
+                    Integer.parseInt(grassNumber.getText()),
+                    Integer.parseInt(dailyGrassGrowth.getText()),
+                    Integer.parseInt(startingEnergy.getText()),
+                    Integer.parseInt(moveEnergy.getText()),
+                    Integer.parseInt(eatEnergy.getText()),
+                    Integer.parseInt(reproductionEnergy.getText()),
+                    Integer.parseInt(minReproductionEnergy.getText()),
+                    Integer.parseInt(genLength.getText()),
+                    Integer.parseInt(minNumberOfMutations.getText()),
+                    Integer.parseInt(maxNumberOfMutations.getText()));
+//            startSimulationButton.setVisible(false);
+//            startSimulationButton.setManaged(false);
+//            stopSimulationButton.setVisible(true);
+//            stopSimulationButton.setManaged(true);
         });
 
         stopSimulationButton.setOnAction(event -> {

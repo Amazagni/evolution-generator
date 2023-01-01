@@ -17,9 +17,6 @@ public class SimulationEngine implements Runnable {
     //DOPISANE
     private int minNumberOfMutations = 3;
     private int maxNumberOfMutations = 5;
-    private int averageLifeLength = 0;
-    private int summaryLifeLength = 0;
-    private int averageEnergyLevel = 0;
     public boolean isRunning = true;
 
     // Do statystyk
@@ -35,8 +32,8 @@ public class SimulationEngine implements Runnable {
     private Vector2d equatorLowerLeft;
     private Vector2d equatorUpperRight;
     private ArrayList<ToxicCorpsesField> corpses;
-    private boolean earth = true;
-    private boolean hellPortal = false;
+    private boolean earth = false;
+    private boolean hellPortal = true;
     public boolean forestedEquators = true;
     private boolean toxicCorpses = false;
     private boolean randomMutation = true;
@@ -197,6 +194,7 @@ public class SimulationEngine implements Runnable {
         boolean[] alreadyMutated = new boolean[genLength];
 
         int numberOfMutations = (int)(Math.random()*(this.maxNumberOfMutations - this.minNumberOfMutations + 1)) + minNumberOfMutations;
+        System.out.println(numberOfMutations);
 
         int currentNumberOfMutations = 0;
 
@@ -247,12 +245,10 @@ public class SimulationEngine implements Runnable {
             } catch (InterruptedException e) {
                 System.out.println("Wystąpił błąd: "+ e);
             }
-            while(this.isRunning) {
+        while(this.isRunning) {
             this.totalBorn += this.bornToday;
             this.totalDead += this.deadToday;
-            if(this.totalDead > 0){
-                this.averageLifeLength = this.summaryLifeLength/this.totalDead;
-            }
+
             System.out.println(this.map);
             System.out.print("Dzień: ");
             System.out.println(day);
@@ -266,10 +262,6 @@ public class SimulationEngine implements Runnable {
             System.out.println(this.totalDead);
             System.out.print("Dziś: ");
             System.out.println(this.deadToday);
-            System.out.println("Średnia długość życia");
-            System.out.println(this.averageLifeLength);
-            System.out.println("Średni poziom energii");
-            System.out.println(this.averageEnergyLevel);
 
             this.bornToday = this.animals.size();
             this.day += 1;
@@ -287,7 +279,6 @@ public class SimulationEngine implements Runnable {
 
             //każde zwierze sie porusza
             for (Animal animal : this.animals) {
-
                 currGene = animal.getGen();
                 newDirection = animal.getDirection().changeDirection(currGene);
                 animal.updateDirection(newDirection);
@@ -322,7 +313,6 @@ public class SimulationEngine implements Runnable {
                         }
                     }
                     this.deadToday += 1;
-                    this.summaryLifeLength += animal.getAge();
                 }
 
             }
@@ -365,12 +355,6 @@ public class SimulationEngine implements Runnable {
                         }
 
                 }
-                int summaryEnergy = 0;
-                for(int i = 0; i < animalsOnPosition; i++){
-                    summaryEnergy += animalList.get(i).getEnergy();
-                }
-                this.averageEnergyLevel = 0;
-                if(animalList.size()!= 0)this.averageEnergyLevel = summaryEnergy / animals.size();
             });
             this.bornToday = this.animals.size() + this.deadToday - this.bornToday;
             generateRandomGrass(this.dailyGrassGrowth);
