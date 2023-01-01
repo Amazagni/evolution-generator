@@ -91,7 +91,11 @@ public class EarthMap implements IWorldMap {
     public Map<Vector2d, ArrayList<Animal>> getAnimals() {
         return animals;
     }
-    //    public void plantTheGrass(){
-//
-//    }
+
+    public int getAnimalsCount() { return this.animals.size(); }
+
+    public int getGrassCount() { return this.clumpsOfGrass.size(); }
+
+    public int getFreeSpotsCount() { return (this.upperRight.y + 1) * (this.upperRight.x + 1) - this.clumpsOfGrass.size();}
+
 }

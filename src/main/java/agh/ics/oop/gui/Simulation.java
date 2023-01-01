@@ -145,11 +145,11 @@ public class Simulation implements IAnimalMovementObserver{
             drawMap(this.map, this.mapGridPane, true);
 
 //            UPDATING CHARTS
-//            this.animalsNumberChartSeries.getData().add(new XYChart.Data<>(this.engine., this.engine1.countAnimals()));
-//            this.grassNumberChartSeries.getData().add(new XYChart.Data<>(this.eraCount, this.map1.getTotalGrassAmount()));
-//            this.freeSpotsChartSeries.getData().add(new XYChart.Data<>(this.eraCount, this.engine1.getAvgLifeSpan()));
-//            this.avgEnergyChartSeries.getData().add(new XYChart.Data<>(this.eraCount, this.engine1.getAvgEnergy()));
-//            this.avgLifeSpanChartSeries.getData().add(new XYChart.Data<>(this.eraCount, this.engine1.getAvgChildrenAmount()));
+            this.animalsNumberChartSeries.getData().add(new XYChart.Data<>(this.engine.getCurrentDayCount(), this.map.getAnimalsCount()));
+            this.grassNumberChartSeries.getData().add(new XYChart.Data<>(this.engine.getCurrentDayCount(), this.map.getGrassCount()));
+            this.freeSpotsChartSeries.getData().add(new XYChart.Data<>(this.engine.getCurrentDayCount(), this.map.getFreeSpotsCount()));
+            this.avgEnergyChartSeries.getData().add(new XYChart.Data<>(this.engine.getCurrentDayCount(), this.engine.getAverageEnergyLevel()));
+            this.avgLifeSpanChartSeries.getData().add(new XYChart.Data<>(this.engine.getCurrentDayCount(), this.engine.getAverageLifeLength()));
         });
     }
 }
