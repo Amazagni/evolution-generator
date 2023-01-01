@@ -10,6 +10,7 @@ import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
@@ -29,6 +30,9 @@ public class Simulation implements IAnimalMovementObserver{
     private final XYChart.Series<Number, Number> avgEnergyChartSeries = new XYChart.Series<>();
     private final XYChart.Series<Number, Number> avgLifeSpanChartSeries = new XYChart.Series<>();
     private ArrayList<XYChart.Series<Number, Number>> chartSeriesArr;
+    private Label dominant = new Label("None");
+    private Label dominantCount = new Label("1");
+
 
     private void drawMap(EarthMap map, GridPane mapGridPane, boolean flag) {
         mapGridPane.setGridLinesVisible(false);
@@ -97,13 +101,20 @@ public class Simulation implements IAnimalMovementObserver{
             }
         };
 
+        Label dominantTitle = new Label("Most common genome: ");
+        HBox dominantTitleBox = new HBox(dominantTitle, dominant);
+        Label dominantCountTitle = new Label("Times present: ");
+        HBox dominantCountBox = new HBox(dominantCountTitle, dominantCount);
+        VBox dominantBox = new VBox(dominantTitleBox, dominantCountBox);
+
+
         Button startSimulationButton = new Button("Resume simulation");
         Button stopSimulationButton = new Button("Pause simulation");
         startSimulationButton.setVisible(false);
         startSimulationButton.setManaged(false);
         HBox buttonsBox = new HBox(startSimulationButton, stopSimulationButton);
         VBox mapBox = new VBox(this.mapGridPane, buttonsBox);
-        VBox statsBox = new VBox(chart);
+        VBox statsBox = new VBox(chart, dominantBox);
         HBox viewBox = new HBox(mapBox, statsBox);
 
         this.map = new EarthMap(new Vector2d(mapWidth, mapHeight));
@@ -155,6 +166,12 @@ public class Simulation implements IAnimalMovementObserver{
             this.freeSpotsChartSeries.getData().add(new XYChart.Data<>(this.engine.getCurrentDayCount(), this.map.getFreeSpotsCount()));
             this.avgEnergyChartSeries.getData().add(new XYChart.Data<>(this.engine.getCurrentDayCount(), this.engine.getAverageEnergyLevel()));
             this.avgLifeSpanChartSeries.getData().add(new XYChart.Data<>(this.engine.getCurrentDayCount(), this.engine.getAverageLifeLength()));
+            this.dominant = new Label(this.engine.getMostCommonGenotype().toString());
+            this.dominantCount = new Label(Integer.toString(this.engine.getMostPopularGenotypeCount()));
         });
     }
+
+//    private void spawnButtons() {
+//        ArrayList<Vector2d> =
+//    }
 }
