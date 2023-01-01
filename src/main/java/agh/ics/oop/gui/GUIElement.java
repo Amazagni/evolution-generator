@@ -32,8 +32,8 @@ public class GUIElement {
         ImageView gameElementImage;
         Vector2d mapSize = engine.getMap().getUpperRight();
         int biggerCord = Math.max(mapSize.x, mapSize.y);
-        int tileSize = 25;
-        if(biggerCord > 24) tileSize = 600/biggerCord;
+        int tileSize = 50;
+        if(biggerCord > 12) tileSize = 600/biggerCord;
         boolean isForest = false;
         if(gameElement instanceof Animal) {
             // getting the animal image facing north

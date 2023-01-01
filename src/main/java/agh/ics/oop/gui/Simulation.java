@@ -52,8 +52,8 @@ public class Simulation implements IAnimalMovementObserver{
         if (!flag) {
             Vector2d mapSize = map.getUpperRight();
             int biggerCord = Math.max(mapSize.x, mapSize.y);
-            int tileSize = 25;
-            if(biggerCord > 24) tileSize = 600/biggerCord;
+            int tileSize = 50;
+            if(biggerCord > 12) tileSize = 600/biggerCord;
             for (int a = 0; a <= width + 1; a++)
                 mapGridPane.getColumnConstraints().add(new ColumnConstraints(tileSize));
             for (int b = 0; b <= height + 1; b++)
@@ -67,34 +67,13 @@ public class Simulation implements IAnimalMovementObserver{
                       int maxNumberOfMutations
                       ) {
         this.mapGridPane.setPadding(new Insets(50, 50, 20, 50));
-        Button startSimulationButton = new Button("Resume simulation");
-        Button stopSimulationButton = new Button("Pause simulation");
-        startSimulationButton.setVisible(false);
-        startSimulationButton.setManaged(false);
-        HBox buttonsBox = new HBox(startSimulationButton, stopSimulationButton);
-        VBox mapBox = new VBox(this.mapGridPane, buttonsBox);
 
-        this.map = new EarthMap(new Vector2d(mapWidth, mapHeight));
-        this.engine = new SimulationEngine(
-                this.map, animalsNumber, grassNumber, dailyGrassGrowth, startingEnergy, moveEnergy, eatEnergy,
-                reproductionEnergy, minReproductionEnergy, genLength, minNumberOfMutations, maxNumberOfMutations
-            );
-        this.engine.addObserver(this);
-        Thread engineThread = new Thread(this.engine);
-        engineThread.start();
-        drawMap(this.map, this.mapGridPane, false);
-        if(this.map.getUpperRight().x < 25) buttonsBox.setTranslateX(5 + this.map.getUpperRight().x*25/2);
-        else buttonsBox.setTranslateX(305);
-        this.simulationScene = new Scene(mapBox, 1280, 960);
-        Stage simulationStage = new Stage();
-        simulationStage.setScene(this.simulationScene);
-        simulationStage.show();
-
-//       CHARTS
+        //       CHARTS
         final NumberAxis AxisX = new NumberAxis();
         final NumberAxis AxisY = new NumberAxis();
         final LineChart<Number, Number> chart = new LineChart<>(AxisX, AxisY);
         chart.setTitle("Statistics");
+        chart.setPadding(new Insets(25, 0, 0, 0));
 
         this.animalsNumberChartSeries.setName("Animal count");
         this.grassNumberChartSeries.setName("Grass count");
@@ -117,6 +96,31 @@ public class Simulation implements IAnimalMovementObserver{
                 add(avgLifeSpanChartSeries);
             }
         };
+
+        Button startSimulationButton = new Button("Resume simulation");
+        Button stopSimulationButton = new Button("Pause simulation");
+        startSimulationButton.setVisible(false);
+        startSimulationButton.setManaged(false);
+        HBox buttonsBox = new HBox(startSimulationButton, stopSimulationButton);
+        VBox mapBox = new VBox(this.mapGridPane, buttonsBox);
+        VBox statsBox = new VBox(chart);
+        HBox viewBox = new HBox(mapBox, statsBox);
+
+        this.map = new EarthMap(new Vector2d(mapWidth, mapHeight));
+        this.engine = new SimulationEngine(
+                this.map, animalsNumber, grassNumber, dailyGrassGrowth, startingEnergy, moveEnergy, eatEnergy,
+                reproductionEnergy, minReproductionEnergy, genLength, minNumberOfMutations, maxNumberOfMutations
+            );
+        this.engine.addObserver(this);
+        Thread engineThread = new Thread(this.engine);
+        engineThread.start();
+        drawMap(this.map, this.mapGridPane, false);
+        if(this.map.getUpperRight().x < 25) buttonsBox.setTranslateX(5 + this.map.getUpperRight().x*25/2);
+        else buttonsBox.setTranslateX(290);
+        this.simulationScene = new Scene(viewBox, 1280, 960);
+        Stage simulationStage = new Stage();
+        simulationStage.setScene(this.simulationScene);
+        simulationStage.show();
 
         startSimulationButton.setOnAction(event -> {
             // resume the simulation
