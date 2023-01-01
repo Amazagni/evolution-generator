@@ -27,24 +27,28 @@ public class App extends Application implements IAnimalMovementObserver {
 
 //    public void init() {}
 
-    private void drawMap(EarthMap map, GridPane mapGridPane, boolean flag) throws FileNotFoundException {
+    private void drawMap(EarthMap map, GridPane mapGridPane, boolean flag) {
         mapGridPane.setGridLinesVisible(false);
         Label yx = new Label("y/x");
         yx.setFont(new Font(20));
         mapGridPane.add(yx, 0, 0);
         GridPane.setHalignment(yx, HPos.CENTER);
         GUIElement generator;
-        generator = new GUIElement();
         int height = map.getUpperRight().y;
         int width = map.getUpperRight().x;
-        Vector2d currentPosition = new Vector2d(0, 0);
-        for (int i = 0; i <= width; i++) {
-            for (int j = 0; j <= height; j++) {
-                currentPosition = new Vector2d(i, j);
-                StackPane tile = generator.GUIMapElement(map, (IGameElement) map.objectAt(currentPosition), currentPosition, engine);
-                mapGridPane.add(tile, i, j);
-                GridPane.setHalignment(tile, HPos.CENTER);
+        try {
+            generator = new GUIElement();
+            Vector2d currentPosition = new Vector2d(0, 0);
+            for (int i = 0; i <= width; i++) {
+                for (int j = 0; j <= height; j++) {
+                    currentPosition = new Vector2d(i, j);
+                    StackPane tile = generator.GUIMapElement((IGameElement) map.objectAt(currentPosition), currentPosition, engine);
+                    mapGridPane.add(tile, i, j);
+                    GridPane.setHalignment(tile, HPos.CENTER);
+                }
             }
+        } catch (FileNotFoundException error) {
+            System.out.println("Couldn't load necessary files...");
         }
         if (!flag) {
             for (int a = 0; a <= width + 1; a++)
@@ -246,12 +250,11 @@ public class App extends Application implements IAnimalMovementObserver {
     @Override
     public void animalMoved() {
         Platform.runLater(() -> {
+//            UPDATE EVERY MAP
             mapGridPane.getChildren().clear();
-            try {
-                drawMap(this.map, this.mapGridPane, true);
-            } catch (FileNotFoundException e) {
-                throw new RuntimeException(e);
-            }
+            drawMap(this.map, this.mapGridPane, true);
+
+//            UPDATE THE CHARTS
         });
     }
 }

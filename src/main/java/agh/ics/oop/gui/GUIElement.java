@@ -27,7 +27,7 @@ public class GUIElement {
         }
     }
 
-    public StackPane GUIMapElement(EarthMap map, IGameElement gameElement, Vector2d position, SimulationEngine engine) {
+    public StackPane GUIMapElement(IGameElement gameElement, Vector2d position, SimulationEngine engine) {
         ImageView groundTile;
         ImageView gameElementImage;
         boolean isForest = false;

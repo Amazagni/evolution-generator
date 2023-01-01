@@ -4,6 +4,7 @@ import java.util.*;
 
 public class SimulationEngine implements Runnable {
     private List<Animal> animals = new ArrayList<>();
+    private List<IAnimalMovementObserver> observers = new ArrayList<IAnimalMovementObserver>();
     private int grassEnergyGain = 40;//będzie trzeba to przypisać w konstruktorze
     private int dailyEnergyLoss = 5;  // - || -
     private int startingNumberOfGrass = 10;// - || -
@@ -70,6 +71,8 @@ public class SimulationEngine implements Runnable {
         }
         return null;
     }
+
+    public void addObserver(IAnimalMovementObserver application) {this.observers.add(application);}
 
     public boolean isForestTile(Vector2d position) {
         if (this.forestedEquators) {
@@ -320,6 +323,9 @@ public class SimulationEngine implements Runnable {
 
 
             }
+
+        // observers
+        for (IAnimalMovementObserver observer: observers) {observer.animalMoved();}
         }
 
     }
