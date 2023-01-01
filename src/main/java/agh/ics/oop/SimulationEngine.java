@@ -20,6 +20,8 @@ public class SimulationEngine implements Runnable {
     private int averageLifeLength = 0;
     private int summaryLifeLength = 0;
     private int averageEnergyLevel = 0;
+    private ArrayList<Integer> mostPopularGenotype = new ArrayList<>();
+    private int mostPopularGenotypeCount = 0;
     public boolean isRunning = true;
 
     // Do statystyk
@@ -132,12 +134,14 @@ public class SimulationEngine implements Runnable {
         Animal animal = new Animal(position,genes,this.startingEnergy, this.genLength);
         this.animals.add(animal);
         this.map.place(animal);
+
     }
 
     //generowanie trawy tylko dla mapy z równikiemmm
     //drugą trzeba bedzie dopisać
     private void generateRandomGrass(int n){
         //generowanie dla mapy z rownikiem
+        //trawa rosnie tylko na wolnym polu (zapobiega to pojawianiu się nadmiernej ilości zwierząt)
         if(this.forestedEquators){
             int grassOnEquator = (int)(0.8*n);
             //generuje trawe na rowniku
@@ -234,6 +238,29 @@ public class SimulationEngine implements Runnable {
         }
 
     }
+//    private void updateMostPopularGenotype(){
+//        this.mostPopularGenotypeCount = 0;
+//        for(int i = 0; i < this.animals.size(); i++){
+//            int count = 1;
+//            ArrayList<Integer> currGenotype = this.animals.get(i).getGenes();
+//            for(int j = i + 1; i < this.animals.size(); j++){
+//                ArrayList<Integer> toCompare = this.animals.get(j).getGenes();
+//                boolean flag = true;
+//                for(int k = 0; k < this.genLength; k++){
+//                    flag = currGenotype.get(k) == toCompare.get(k);
+//                    System.out.println(k);
+//                    if(!flag){
+//                        break;
+//                    }
+//                }
+//                if(flag)count += 1;
+//            }
+//            if(count > this.mostPopularGenotypeCount){
+//                this.mostPopularGenotypeCount = count;
+//                this.mostPopularGenotype = currGenotype;
+//            }
+//        }
+//    }
 
     public void Start(){ this.isRunning = true; }
     public void Stop(){
@@ -253,6 +280,7 @@ public class SimulationEngine implements Runnable {
                 if(this.totalDead > 0){
                     this.averageLifeLength = this.summaryLifeLength/this.totalDead;
                 }
+               // updateMostPopularGenotype();
                 System.out.println(this.map);
                 System.out.print("Dzień: ");
                 System.out.println(day);
@@ -270,6 +298,10 @@ public class SimulationEngine implements Runnable {
                 System.out.println(this.averageLifeLength);
                 System.out.println("Średni poziom energii");
                 System.out.println(this.averageEnergyLevel);
+//                System.out.println("Najpopularniejszy genotyp: ");
+//                System.out.println(this.mostPopularGenotype);
+//                System.out.print("Wystąpień; ");
+//                System.out.println(this.mostPopularGenotypeCount);
 
                 this.bornToday = this.animals.size();
                 this.day += 1;
