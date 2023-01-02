@@ -2,6 +2,7 @@ package agh.ics.oop;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class CreateStats {
     private int day;
@@ -11,36 +12,38 @@ public class CreateStats {
     private int averageEnergyLevel;
     private int averageLifeLength;
     ArrayList<Integer> genes;
-    private String name;
+    private String name = new Date().toString();
+    private FileWriter writer = new FileWriter("statistics/"+name,true);
 
-    public CreateStats(int day, int numberOfAnimals, int numberOfGrass, int numberOfEmptyTiles,
-                       int averageEnergyLevel, int averageLifeLength,ArrayList<Integer> genes, String name,boolean flag) throws IOException {
-        this.day = day;
-        this.numberOfAnimals = numberOfAnimals;
-        this.numberOfGrass = numberOfGrass;
-        this.numberOfEmptyTiles = numberOfEmptyTiles;
-        this.averageEnergyLevel = averageEnergyLevel;
-        this.averageLifeLength = averageLifeLength;
-        this.genes = genes;
+
+    //    with custom name
+    public CreateStats(String name,boolean flag) throws IOException {
         this.name = name;
+        this.writer = new FileWriter("statistics/"+name,true);
         if(flag)CreateHeader();
-        PrintToFile();
-
     }
+
+    public FileWriter getWriter() {
+        return this.writer;
+    }
+
+    public CreateStats(boolean flag) throws IOException {
+        if(flag)CreateHeader();
+    }
+
     private void CreateHeader() throws IOException {
-        FileWriter writer = new FileWriter("statistics/"+name,true);
-        writer.write("day, ");
-        writer.write("numberOfAnimals, ");
-        writer.write("numberOfGrass, ");
-        writer.write("numberOfEmptyTiles, ");
-        writer.write("averageEnergyLevel, ");
-        writer.write("averageLifeLenght, ");
-        writer.write("strongestGenes, \n");
-        writer.close();
+        this.writer.write("day, ");
+        this.writer.write("numberOfAnimals, ");
+        this.writer.write("numberOfGrass, ");
+        this.writer.write("numberOfEmptyTiles, ");
+        this.writer.write("averageEnergyLevel, ");
+        this.writer.write("averageLifeLength, ");
+        this.writer.write("strongestGenes, \n");
+        this.writer.close();
 
     }
-    private void PrintToFile() throws IOException {
-        FileWriter writer = new FileWriter("statistics/"+name,true);
+    public void PrintToFile(int day, int numberOfAnimals, int numberOfGrass, int numberOfEmptyTiles,
+                             int averageEnergyLevel, int averageLifeLength, ArrayList<Integer> genes, FileWriter writer) throws IOException {
         ArrayList<String> data = new ArrayList<>();
         data.add(Integer.toString(day));
         data.add(", ");
@@ -55,16 +58,17 @@ public class CreateStats {
         data.add(Integer.toString(averageLifeLength));
         data.add(", ");
         String geneString = "";
-        for(int i = 0; i < this.genes.size(); i++){
-            geneString = geneString + this.genes.get(i) + " ";
+        for(int i = 0; i < genes.size(); i++){
+            geneString = geneString + genes.get(i) + " ";
         }
 
         data.add(geneString);
         for(int i = 0; i < data.size(); i++){
-            writer.write(data.get(i));
+            this.writer.write(data.get(i));
+            System.out.println("dupa");
         }
-        writer.write("\n");
-        writer.close();
+        this.writer.write("\n");
+        this.writer.close();
     }
 
 

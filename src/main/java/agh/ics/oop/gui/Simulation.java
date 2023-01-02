@@ -19,6 +19,7 @@ import javafx.stage.Stage;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class Simulation implements IAnimalMovementObserver{
@@ -162,6 +163,17 @@ public class Simulation implements IAnimalMovementObserver{
             startSimulationButton.setManaged(true);
             stopSimulationButton.setVisible(false);
             stopSimulationButton.setManaged(false);
+        });
+
+        exportData.setOnAction(event -> {
+            try {
+                CreateStats createStats = new CreateStats(true);
+                createStats.PrintToFile(this.engine.getCurrentDayCount(), this.engine.getAnimalsCount(),
+                        this.map.getGrassCount(), this.map.getFreeSpotsCount(), this.engine.getAverageEnergyLevel(),
+                        this.engine.getAverageLifeLength(), this.engine.getMostCommonGenotype(), createStats.getWriter());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         });
     }
 
