@@ -11,7 +11,9 @@ import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.layout.*;
+import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 
 import java.io.FileNotFoundException;
@@ -110,9 +112,11 @@ public class Simulation implements IAnimalMovementObserver{
 
         Button startSimulationButton = new Button("Resume simulation");
         Button stopSimulationButton = new Button("Pause simulation");
+        Button exportData = new Button("Export data");
         startSimulationButton.setVisible(false);
         startSimulationButton.setManaged(false);
-        HBox buttonsBox = new HBox(startSimulationButton, stopSimulationButton);
+        exportData.setTranslateX(10);
+        HBox buttonsBox = new HBox(startSimulationButton, stopSimulationButton, exportData);
         VBox mapBox = new VBox(this.mapGridPane, buttonsBox);
         VBox statsBox = new VBox(chart, dominantBox);
         HBox viewBox = new HBox(mapBox, statsBox);
@@ -128,7 +132,7 @@ public class Simulation implements IAnimalMovementObserver{
         engineThread.start();
         drawMap(this.map, this.mapGridPane, false);
         if(this.map.getUpperRight().x < 13) buttonsBox.setTranslateX(5 + this.map.getUpperRight().x*50/2);
-        else buttonsBox.setTranslateX(290);
+        else buttonsBox.setTranslateX(255);
         this.simulationScene = new Scene(viewBox, 1280, 960);
         Stage simulationStage = new Stage();
         simulationStage.setScene(this.simulationScene);
