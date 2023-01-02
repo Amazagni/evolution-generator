@@ -51,6 +51,7 @@ public class Simulation implements IAnimalMovementObserver{
     private Label daysLivedLabel = new Label("6");
     private boolean showEnergyIndicator = false;
     private boolean flagbuttons = false;
+    private CreateStats createStats = new CreateStats(false);
 
 
     private void drawMap(EarthMap map, GridPane mapGridPane, boolean redraw, boolean buttons) {
@@ -93,9 +94,10 @@ public class Simulation implements IAnimalMovementObserver{
                       int reproductionEnergy, int minReproductionEnergy, int genLength, int minNumberOfMutations,
                       int maxNumberOfMutations, boolean earth, boolean forest, boolean slight, boolean following,
                       boolean showEnergyIndicator, boolean data
-                      ) throws FileNotFoundException {
+                      ) throws IOException {
         this.mapGridPane.setPadding(new Insets(50, 0, 20, 50));
         this.showEnergyIndicator = showEnergyIndicator;
+        this.createStats.CreateHeader();
 
         //       CHARTS
         final NumberAxis AxisX = new NumberAxis();
@@ -210,10 +212,7 @@ public class Simulation implements IAnimalMovementObserver{
 
         exportData.setOnAction(event -> {
             try {
-                CreateStats createStats = new CreateStats(true);
-                createStats.PrintToFile(this.engine.getCurrentDayCount(), this.engine.getAnimalsCount(),
-                        this.map.getGrassCount(), this.map.getFreeSpotsCount(), this.engine.getAverageEnergyLevel(),
-                        this.engine.getAverageLifeLength(), this.engine.getMostCommonGenotype(), createStats.getWriter());
+                this.createStats.getWriter().close();
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -260,6 +259,14 @@ public class Simulation implements IAnimalMovementObserver{
             this.avgLifeSpanChartSeries.getData().add(new XYChart.Data<>(this.engine.getCurrentDayCount(), this.engine.getAverageLifeLength()));
             this.dominant.setText(this.engine.getMostCommonGenotype().toString());
             this.dominantCount.setText(Integer.toString(this.engine.getMostPopularGenotypeCount()));
+
+            try {
+                this.createStats.PrintToFile(this.engine.getCurrentDayCount(), this.engine.getAnimalsCount(),
+                        this.map.getGrassCount(), this.map.getFreeSpotsCount(), this.engine.getAverageEnergyLevel(),
+                        this.engine.getAverageLifeLength(), this.engine.getMostCommonGenotype(), createStats.getWriter());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         });
     }
 

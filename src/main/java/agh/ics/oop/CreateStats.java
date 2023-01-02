@@ -31,7 +31,7 @@ public class CreateStats {
         if(flag)CreateHeader();
     }
 
-    private void CreateHeader() throws IOException {
+    public void CreateHeader() throws IOException {
         this.writer.write("day, ");
         this.writer.write("numberOfAnimals, ");
         this.writer.write("numberOfGrass, ");
@@ -39,7 +39,6 @@ public class CreateStats {
         this.writer.write("averageEnergyLevel, ");
         this.writer.write("averageLifeLength, ");
         this.writer.write("strongestGenes, \n");
-        this.writer.close();
 
     }
     public void PrintToFile(int day, int numberOfAnimals, int numberOfGrass, int numberOfEmptyTiles,
@@ -68,7 +67,6 @@ public class CreateStats {
             System.out.println("dupa");
         }
         this.writer.write("\n");
-        this.writer.close();
     }
 
 

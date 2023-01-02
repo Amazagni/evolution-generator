@@ -22,6 +22,7 @@ import javafx.stage.Stage;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class App extends Application {
@@ -352,6 +353,8 @@ public class App extends Application {
                         earth.isSelected(), forest.isSelected(), slight.isSelected(), following.isSelected(),
                         energy.isSelected(), data.isSelected()).simulationScene;
             } catch (FileNotFoundException e) {
+                throw new RuntimeException(e);
+            } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         });
