@@ -106,7 +106,7 @@ public class Simulation implements IAnimalMovementObserver{
         Label dominantCountTitle = new Label("Times present: ");
         HBox dominantCountBox = new HBox(dominantCountTitle, dominantCount);
         VBox dominantBox = new VBox(dominantTitleBox, dominantCountBox);
-
+        dominantBox.setPadding(new Insets(20, 0, 0, 0));
 
         Button startSimulationButton = new Button("Resume simulation");
         Button stopSimulationButton = new Button("Pause simulation");
@@ -166,8 +166,8 @@ public class Simulation implements IAnimalMovementObserver{
             this.freeSpotsChartSeries.getData().add(new XYChart.Data<>(this.engine.getCurrentDayCount(), this.map.getFreeSpotsCount()));
             this.avgEnergyChartSeries.getData().add(new XYChart.Data<>(this.engine.getCurrentDayCount(), this.engine.getAverageEnergyLevel()));
             this.avgLifeSpanChartSeries.getData().add(new XYChart.Data<>(this.engine.getCurrentDayCount(), this.engine.getAverageLifeLength()));
-            this.dominant = new Label(this.engine.getMostCommonGenotype().toString());
-            this.dominantCount = new Label(Integer.toString(this.engine.getMostPopularGenotypeCount()));
+            this.dominant.setText(this.engine.getMostCommonGenotype().toString());
+            this.dominantCount.setText(Integer.toString(this.engine.getMostPopularGenotypeCount()));
         });
     }
 
