@@ -20,8 +20,7 @@ public class World {
 //        engine.run();
 
 //        RUN WITH GUI
-//        SaveToFile save = new SaveToFile();
-       // save.CreateFile();
+
         Application.launch(App.class, args);
     }
 }
