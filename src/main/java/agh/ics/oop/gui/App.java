@@ -259,6 +259,11 @@ public class App extends Application {
         setParametersButton.setTranslateX(130);
         setParametersButton.setTranslateY(20);
 
+//        CHECKBOXES
+        CheckBox energy = new CheckBox("Show energy indicator");
+        CheckBox data = new CheckBox("Export data");
+        data.setTranslateX(27);
+
 //        IMAGE
         Image mainImage = new Image(new FileInputStream("src/main/resources/mainImage.png"));
         ImageView mainImageView = new ImageView(mainImage);
@@ -303,11 +308,12 @@ public class App extends Application {
         HBox maxNumberOfMutationsBox = new HBox(maxNumberOfMutationsLabel, maxNumberOfMutations);
         maxNumberOfMutationsBox.setPadding(new Insets(0, 0, 10, 0));
         HBox radiosConfigBox = new HBox(radio1, radio2, radio3);
+        HBox checkboxes = new HBox(energy, data);
 
         VBox settings = new VBox(
                 parametersLabel, radiosConfigBox, mapWidthBox, mapHeightBox, animalsNumberBox, grassNumberBox,
                 dailyGrassGrowthBox, startingEnergyBox, moveEnergyBox, eatEnergyBox, reproductionEnergyBox,
-                minReproductionEnergyBox, genLengthBox, minNumberOfMutationsBox, maxNumberOfMutationsBox,
+                minReproductionEnergyBox, genLengthBox, minNumberOfMutationsBox, maxNumberOfMutationsBox, checkboxes,
                 mapRadiosBox, mapTypeRadiosBox, mutationRadiosBox, behaviourRadiosBox, setParametersButton
             );
 
@@ -327,21 +333,26 @@ public class App extends Application {
 
 //        BUTTONS ACTIONS
         setParametersButton.setOnAction(event -> {
-            Scene simulationScene = new Simulation(
-                    Integer.parseInt(mapWidth.getText()),
-                    Integer.parseInt(mapHeight.getText()),
-                    Integer.parseInt(animalsNumber.getText()),
-                    Integer.parseInt(grassNumber.getText()),
-                    Integer.parseInt(dailyGrassGrowth.getText()),
-                    Integer.parseInt(startingEnergy.getText()),
-                    Integer.parseInt(moveEnergy.getText()),
-                    Integer.parseInt(eatEnergy.getText()),
-                    Integer.parseInt(reproductionEnergy.getText()),
-                    Integer.parseInt(minReproductionEnergy.getText()),
-                    Integer.parseInt(genLength.getText()),
-                    Integer.parseInt(minNumberOfMutations.getText()),
-                    Integer.parseInt(maxNumberOfMutations.getText()),
-                    earth.isSelected(), forest.isSelected(), slight.isSelected(), following.isSelected()).simulationScene;
+            try {
+                Scene simulationScene = new Simulation(
+                        Integer.parseInt(mapWidth.getText()),
+                        Integer.parseInt(mapHeight.getText()),
+                        Integer.parseInt(animalsNumber.getText()),
+                        Integer.parseInt(grassNumber.getText()),
+                        Integer.parseInt(dailyGrassGrowth.getText()),
+                        Integer.parseInt(startingEnergy.getText()),
+                        Integer.parseInt(moveEnergy.getText()),
+                        Integer.parseInt(eatEnergy.getText()),
+                        Integer.parseInt(reproductionEnergy.getText()),
+                        Integer.parseInt(minReproductionEnergy.getText()),
+                        Integer.parseInt(genLength.getText()),
+                        Integer.parseInt(minNumberOfMutations.getText()),
+                        Integer.parseInt(maxNumberOfMutations.getText()),
+                        earth.isSelected(), forest.isSelected(), slight.isSelected(), following.isSelected(),
+                        energy.isSelected(), data.isSelected()).simulationScene;
+            } catch (FileNotFoundException e) {
+                throw new RuntimeException(e);
+            }
         });
     }
 }

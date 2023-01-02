@@ -34,7 +34,7 @@ public class GUIElement {
         }
     }
 
-    public StackPane GUIMapElement(IGameElement gameElement, Vector2d position, SimulationEngine engine) {
+    public StackPane GUIMapElement(IGameElement gameElement, Vector2d position, SimulationEngine engine, boolean showIndicator) {
         ImageView groundTile;
         ImageView gameElementImage;
         Vector2d mapSize = engine.getMap().getUpperRight();
@@ -53,7 +53,7 @@ public class GUIElement {
             // getting the animal image facing north
             gameElementImage = new ImageView(animalImage);
             Circle indicator = new Circle(Math.max(0.1 * tileSize, 1));
-            indicator.setFill(Color.rgb(Math.min(((Animal) gameElement).getEnergy() * 255/5*engine.getStartingEnergy(), 255), 0, 0));
+            indicator.setFill(Color.rgb(Math.min(((Animal) gameElement).getEnergy() * 255/10*engine.getGrassEnergyGain(), 255), 0, 0));
             indicator.setTranslateX(0.4 * tileSize);
             indicator.setTranslateY(-0.4 * tileSize);
             // rotating the animal depending on its direction
@@ -69,7 +69,8 @@ public class GUIElement {
             };
             gameElementImage.setFitHeight(0.8 * tileSize);
             gameElementImage.setFitWidth(0.8 * tileSize);
-            stackPane.getChildren().addAll(groundTile, gameElementImage, indicator);
+            if(showIndicator) stackPane.getChildren().addAll(groundTile, gameElementImage, indicator);
+            else stackPane.getChildren().addAll(groundTile, gameElementImage);
         }
         else if (gameElement instanceof Grass) {
             // getting the bush (grass) image

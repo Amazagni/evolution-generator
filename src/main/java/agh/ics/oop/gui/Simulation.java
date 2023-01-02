@@ -12,10 +12,12 @@ import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
+import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
@@ -34,6 +36,7 @@ public class Simulation implements IAnimalMovementObserver{
     private ArrayList<XYChart.Series<Number, Number>> chartSeriesArr;
     private Label dominant = new Label("None");
     private Label dominantCount = new Label("1");
+    private boolean showEnergyIndicator = false;
 
 
     private void drawMap(EarthMap map, GridPane mapGridPane, boolean flag) {
@@ -47,7 +50,7 @@ public class Simulation implements IAnimalMovementObserver{
             for (int i = 0; i <= width; i++) {
                 for (int j = 0; j <= height; j++) {
                     currentPosition = new Vector2d(i, height - j);
-                    StackPane tile = generator.GUIMapElement((IGameElement) map.objectAt(currentPosition), currentPosition, engine);
+                    StackPane tile = generator.GUIMapElement((IGameElement) map.objectAt(currentPosition), currentPosition, engine, showEnergyIndicator);
                     mapGridPane.add(tile, i, j);
                     GridPane.setHalignment(tile, HPos.CENTER);
                 }
@@ -70,9 +73,11 @@ public class Simulation implements IAnimalMovementObserver{
     public Simulation(int mapWidth, int mapHeight, int animalsNumber,
                       int grassNumber, int dailyGrassGrowth,int startingEnergy, int moveEnergy, int eatEnergy,
                       int reproductionEnergy, int minReproductionEnergy, int genLength, int minNumberOfMutations,
-                      int maxNumberOfMutations, boolean earth, boolean forest, boolean slight, boolean following
-                      ) {
+                      int maxNumberOfMutations, boolean earth, boolean forest, boolean slight, boolean following,
+                      boolean showEnergyIndicator, boolean data
+                      ) throws FileNotFoundException {
         this.mapGridPane.setPadding(new Insets(50, 0, 20, 50));
+        this.showEnergyIndicator = showEnergyIndicator;
 
         //       CHARTS
         final NumberAxis AxisX = new NumberAxis();
@@ -134,7 +139,10 @@ public class Simulation implements IAnimalMovementObserver{
         if(this.map.getUpperRight().x < 13) buttonsBox.setTranslateX(5 + this.map.getUpperRight().x*50/2);
         else buttonsBox.setTranslateX(255);
         this.simulationScene = new Scene(viewBox, 1280, 960);
+        Image Icon = new Image(new FileInputStream("src/main/resources/icon.png"));
         Stage simulationStage = new Stage();
+        simulationStage.setTitle("Evolution Simulation");
+        simulationStage.getIcons().add(Icon);
         simulationStage.setScene(this.simulationScene);
         simulationStage.show();
 

@@ -151,7 +151,7 @@ public class SimulationEngine implements Runnable {
     }
 
     public int getAnimalsCount() { return this.animals.size(); }
-    public int getStartingEnergy() { return startingEnergy; }
+    public int getGrassEnergyGain() { return grassEnergyGain; }
 
     //generowanie trawy tylko dla mapy z równikiemmm
     //drugą trzeba bedzie dopisać
