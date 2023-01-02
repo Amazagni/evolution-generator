@@ -2,6 +2,8 @@ package agh.ics.oop.gui;
 
 import agh.ics.oop.*;
 import javafx.geometry.Insets;
+import javafx.scene.control.Button;
+import javafx.scene.control.Hyperlink;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -34,7 +36,7 @@ public class GUIElement {
         }
     }
 
-    public StackPane GUIMapElement(IGameElement gameElement, Vector2d position, SimulationEngine engine, boolean showIndicator) {
+    public StackPane GUIMapElement(IGameElement gameElement, Vector2d position, SimulationEngine engine, boolean showIndicator, boolean buttons) {
         ImageView groundTile;
         ImageView gameElementImage;
         Vector2d mapSize = engine.getMap().getUpperRight();
@@ -53,6 +55,12 @@ public class GUIElement {
             // getting the animal image facing north
             gameElementImage = new ImageView(animalImage);
             Circle indicator = new Circle(Math.max(0.1 * tileSize, 1));
+            Hyperlink button = new Hyperlink();
+//            button.setVisible(false);
+            button.setOnAction(event -> {
+                engine.highlightedAnimal = (Animal) gameElement;
+                engine.isHighlighted = true;
+            });
             indicator.setFill(Color.rgb(Math.min(((Animal) gameElement).getEnergy() * 255/10*engine.getGrassEnergyGain(), 255), 0, 0));
             indicator.setTranslateX(0.4 * tileSize);
             indicator.setTranslateY(-0.4 * tileSize);
@@ -69,7 +77,10 @@ public class GUIElement {
             };
             gameElementImage.setFitHeight(0.8 * tileSize);
             gameElementImage.setFitWidth(0.8 * tileSize);
-            if(showIndicator) stackPane.getChildren().addAll(groundTile, gameElementImage, indicator);
+
+            if(!showIndicator && buttons) stackPane.getChildren().addAll(groundTile, gameElementImage, button);
+            else if(showIndicator && !buttons) stackPane.getChildren().addAll(groundTile, gameElementImage, indicator);
+            else if(showIndicator && buttons) stackPane.getChildren().addAll(groundTile, gameElementImage, indicator, button);
             else stackPane.getChildren().addAll(groundTile, gameElementImage);
         }
         else if (gameElement instanceof Grass) {

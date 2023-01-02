@@ -258,6 +258,7 @@ public class App extends Application {
         Button setParametersButton = new Button("Start new simulation");
         setParametersButton.setTranslateX(130);
         setParametersButton.setTranslateY(20);
+        setParametersButton.setDefaultButton(true);
 
 //        CHECKBOXES
         CheckBox energy = new CheckBox("Show energy indicator");

@@ -38,20 +38,24 @@ public class Simulation implements IAnimalMovementObserver{
     private Label dominant = new Label("None");
     private Label dominantCount = new Label("1");
     private boolean showEnergyIndicator = false;
+    private boolean flagbuttons = false;
 
 
-    private void drawMap(EarthMap map, GridPane mapGridPane, boolean flag) {
+    private void drawMap(EarthMap map, GridPane mapGridPane, boolean redraw, boolean buttons) {
         mapGridPane.setGridLinesVisible(false);
         GUIElement generator;
         int height = map.getUpperRight().y;
         int width = map.getUpperRight().x;
         try {
+            System.out.println(buttons);
             generator = new GUIElement();
             Vector2d currentPosition = new Vector2d(0, 0);
             for (int i = 0; i <= width; i++) {
                 for (int j = 0; j <= height; j++) {
                     currentPosition = new Vector2d(i, height - j);
-                    StackPane tile = generator.GUIMapElement((IGameElement) map.objectAt(currentPosition), currentPosition, engine, showEnergyIndicator);
+                    StackPane tile = generator.GUIMapElement(
+                            (IGameElement) map.objectAt(currentPosition), currentPosition, engine, showEnergyIndicator, this.flagbuttons
+                    );
                     mapGridPane.add(tile, i, j);
                     GridPane.setHalignment(tile, HPos.CENTER);
                 }
@@ -59,7 +63,7 @@ public class Simulation implements IAnimalMovementObserver{
         } catch (FileNotFoundException error) {
             System.out.println("Couldn't load necessary files...");
         }
-        if (!flag) {
+        if (!redraw) {
             Vector2d mapSize = map.getUpperRight();
             int biggerCord = Math.max(mapSize.x, mapSize.y);
             int tileSize = 50;
@@ -69,6 +73,8 @@ public class Simulation implements IAnimalMovementObserver{
             for (int b = 0; b <= height + 1; b++)
                 mapGridPane.getRowConstraints().add(new RowConstraints(tileSize));
         }
+        if (this.flagbuttons) this.flagbuttons = false;
+        if (buttons) this.flagbuttons = true;
     }
 
     public Simulation(int mapWidth, int mapHeight, int animalsNumber,
@@ -116,6 +122,26 @@ public class Simulation implements IAnimalMovementObserver{
         VBox dominantBox = new VBox(dominantTitleBox, dominantCountBox);
         dominantBox.setPadding(new Insets(20, 0, 0, 0));
 
+//        HIGHLIGHTED ANIMAL
+
+        Label genotypeTitleLabel = new Label("Genotype: ");
+        Label genotypeLabel = new Label(this.engine.highlightedAnimal.getGenes().toString());
+        HBox highlightedGenotype = new HBox(genotypeTitleLabel, genotypeLabel);
+        Label currentGenTitleLabel = new Label("Currently activated gen: ");
+        Label currentGenLabel = new Label(String.valueOf(this.engine.highlightedAnimal.getGen()));
+        HBox currentGen = new HBox(currentGenTitleLabel, currentGenLabel);
+        Label energyCountTitleLabel = new Label("Current energy: ");
+        Label energyCountLabel = new Label(String.valueOf(this.engine.highlightedAnimal.getEnergy()));
+        HBox energyCount = new HBox(energyCountTitleLabel, energyCountLabel);
+        Label grassEatenTitleLabel = new Label("Number of eaten grass: ");
+        Label grassEatenLabel = new Label(String.valueOf(this.engine.highlightedAnimal.getGrassEaten()));
+        HBox grassEaten = new HBox(grassEatenTitleLabel, grassEatenLabel);
+        Label kidsTitleLabel = new Label("Number of kids: ");
+        Label kidsLabel = new Label(String.valueOf(this.engine.highlightedAnimal.getNumberOfChildren()));
+        HBox kids = new HBox(kidsTitleLabel, kidsLabel);
+
+        VBox highlighted = new VBox(highlightedGenotype, currentGen, energyCount, grassEaten, kids);
+
         Button startSimulationButton = new Button("Resume simulation");
         Button stopSimulationButton = new Button("Pause simulation");
         Button exportData = new Button("Export data");
@@ -136,7 +162,7 @@ public class Simulation implements IAnimalMovementObserver{
         this.engine.addObserver(this);
         Thread engineThread = new Thread(this.engine);
         engineThread.start();
-        drawMap(this.map, this.mapGridPane, false);
+        drawMap(this.map, this.mapGridPane, false, false);
         if(this.map.getUpperRight().x < 13) buttonsBox.setTranslateX(5 + this.map.getUpperRight().x*50/2);
         else buttonsBox.setTranslateX(255);
         this.simulationScene = new Scene(viewBox, 1280, 960);
@@ -163,6 +189,8 @@ public class Simulation implements IAnimalMovementObserver{
             startSimulationButton.setManaged(true);
             stopSimulationButton.setVisible(false);
             stopSimulationButton.setManaged(false);
+
+            drawMap(this.map, this.mapGridPane, true, true);
         });
 
         exportData.setOnAction(event -> {
@@ -182,7 +210,7 @@ public class Simulation implements IAnimalMovementObserver{
         Platform.runLater(() -> {
 //            UPDATING MAP
             mapGridPane.getChildren().clear();
-            drawMap(this.map, this.mapGridPane, true);
+            drawMap(this.map, this.mapGridPane, true, false);
 
 //            UPDATING CHARTS
             this.animalsNumberChartSeries.getData().add(new XYChart.Data<>(this.engine.getCurrentDayCount(), this.engine.getAnimalsCount()));
@@ -195,7 +223,4 @@ public class Simulation implements IAnimalMovementObserver{
         });
     }
 
-//    private void spawnButtons() {
-//        ArrayList<Vector2d> =
-//    }
 }

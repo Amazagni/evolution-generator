@@ -5,6 +5,8 @@ import java.util.*;
 public class SimulationEngine implements Runnable {
     private List<Animal> animals = new ArrayList<>();
     private List<IAnimalMovementObserver> observers = new ArrayList<IAnimalMovementObserver>();
+    public Animal highlightedAnimal;
+    public boolean isHighlighted = false;
     private int grassEnergyGain = 40;//będzie trzeba to przypisać w konstruktorze
     private int dailyEnergyLoss = 5;  // - || -
     private int startingNumberOfGrass = 10;// - || -

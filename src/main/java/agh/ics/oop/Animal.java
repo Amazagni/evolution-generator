@@ -2,6 +2,8 @@ package agh.ics.oop;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Random;
+import java.util.RandomAccess;
+
 public class Animal implements Comparable<Animal>, IGameElement {
     private MapDirection direction;
     private ArrayList<Integer> genes;
