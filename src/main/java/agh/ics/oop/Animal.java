@@ -16,6 +16,7 @@ public class Animal implements Comparable<Animal>, IGameElement {
     private int genLength = 10;
     private int diedAt = -1;
 
+    public Animal() {}
 
     public Animal(Vector2d startingPosition, ArrayList<Integer> genes, int energy, int genLength){
         this.energy = energy;

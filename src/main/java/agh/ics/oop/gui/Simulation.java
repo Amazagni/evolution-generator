@@ -3,6 +3,8 @@ package agh.ics.oop.gui;
 import agh.ics.oop.*;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -10,6 +12,7 @@ import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.image.Image;
@@ -127,7 +130,10 @@ public class Simulation implements IAnimalMovementObserver{
         HBox dominantTitleBox = new HBox(dominantTitle, dominant);
         Label dominantCountTitle = new Label("Times present: ");
         HBox dominantCountBox = new HBox(dominantCountTitle, dominantCount);
-        VBox dominantBox = new VBox(dominantTitleBox, dominantCountBox);
+        VBox dominantBoxNoButton = new VBox(dominantTitleBox, dominantCountBox);
+        CheckBox dominantCheckbox = new CheckBox("Highlight those animals");
+        dominantCheckbox.setPadding(new Insets(0, 0, 0, 25));
+        HBox dominantBox = new HBox(dominantBoxNoButton, dominantCheckbox);
         dominantBox.setPadding(new Insets(20, 0, 0, 0));
 
 //        HIGHLIGHTED ANIMAL
@@ -210,6 +216,14 @@ public class Simulation implements IAnimalMovementObserver{
                         this.engine.getAverageLifeLength(), this.engine.getMostCommonGenotype(), createStats.getWriter());
             } catch (IOException e) {
                 throw new RuntimeException(e);
+            }
+        });
+
+        dominantCheckbox.selectedProperty().addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                if(dominantCheckbox.isSelected()) engine.showAnimalsWithDominantGenotype = true;
+                else engine.showAnimalsWithDominantGenotype = false;
             }
         });
     }

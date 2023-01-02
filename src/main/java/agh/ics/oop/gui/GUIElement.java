@@ -5,6 +5,7 @@ import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.ProgressBar;
+import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
@@ -54,6 +55,8 @@ public class GUIElement {
         if(gameElement instanceof Animal) {
             // getting the animal image facing north
             gameElementImage = new ImageView(animalImage);
+            if(engine.showAnimalsWithDominantGenotype && ((Animal) gameElement).getGenes().equals(engine.getMostCommonGenotype())) gameElementImage.setEffect(new ColorAdjust(0, 100, 0, 0));
+            if(engine.highlightedAnimal.equals((Animal) gameElement)) gameElementImage.setEffect(new ColorAdjust(100, 100, 0, 0));
             Circle indicator = new Circle(Math.max(0.1 * tileSize, 1));
             Hyperlink button = new Hyperlink();
 //            button.setVisible(false);
