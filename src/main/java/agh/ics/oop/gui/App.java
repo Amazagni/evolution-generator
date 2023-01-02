@@ -40,6 +40,14 @@ public class App extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
 
+//        EXTERNAL DATA
+        ConfigReader data1 = new ConfigReader();
+        data1.readFile("config1");
+        ConfigReader data2 = new ConfigReader();
+        data2.readFile("config2");
+        ConfigReader data3 = new ConfigReader();
+        data3.readFile("config3");
+
 //        LABELS
         Label name = new Label("Evolution Simulation");
         Label authors = new Label("by Marcin Chudy and Filip Dziurdzia");
@@ -55,7 +63,7 @@ public class App extends Application {
         Label minReproduceEnergyLabel = new Label("Minimum energy needed for reproduction: ");
         Label genLengthLabel = new Label("Number of genes in genome: ");
         Label minNumberOfMutationsLabel = new Label("Minimum number of mutations: ");
-        Label maxNumberOfMutationsLabel = new Label("Minimum number of mutations: ");
+        Label maxNumberOfMutationsLabel = new Label("Maximum number of mutations: ");
         Label parametersLabel = new Label("Set your simulation's parameters");
 
 //        LABELS SETTINGS
@@ -94,19 +102,19 @@ public class App extends Application {
         parametersLabel.setPadding(new Insets(0, 0, 20, 0));
 
 //        TEXT FIELDS
-        TextField mapWidth = new TextField("15");
-        TextField mapHeight = new TextField("15");
-        TextField animalsNumber = new TextField("10");
-        TextField grassNumber = new TextField("20");
-        TextField dailyGrassGrowth = new TextField("20");
-        TextField startingEnergy = new TextField("120");
-        TextField moveEnergy = new TextField("5");
-        TextField eatEnergy = new TextField("40");
-        TextField reproductionEnergy = new TextField("30");
-        TextField minReproductionEnergy = new TextField("25");
-        TextField genLength = new TextField("32");
-        TextField minNumberOfMutations = new TextField("3");
-        TextField maxNumberOfMutations = new TextField("5");
+        TextField mapWidth = new TextField(String.valueOf(data1.mapWidth));
+        TextField mapHeight = new TextField(String.valueOf(data1.mapHeight));
+        TextField animalsNumber = new TextField(String.valueOf(data1.animalNumber));
+        TextField grassNumber = new TextField(String.valueOf(data1.grassNumber));
+        TextField dailyGrassGrowth = new TextField(String.valueOf(data1.dailyGrassGrowth));
+        TextField startingEnergy = new TextField(String.valueOf(data1.startingEnergy));
+        TextField moveEnergy = new TextField(String.valueOf(data1.moveEnergy));
+        TextField eatEnergy = new TextField(String.valueOf(data1.eatEnergy));
+        TextField reproductionEnergy = new TextField(String.valueOf(data1.reproductionEnergy));
+        TextField minReproductionEnergy = new TextField(String.valueOf(data1.minReproductionEnergy));
+        TextField genLength = new TextField(String.valueOf(data1.genLength));
+        TextField minNumberOfMutations = new TextField(String.valueOf(data1.minNumberOfMutations));
+        TextField maxNumberOfMutations = new TextField(String.valueOf(data1.maxNumberOfMutations));
 
 //        TEXT FIELDS SETTINGS
         mapWidth.setMaxWidth(60);
@@ -127,34 +135,38 @@ public class App extends Application {
         ToggleGroup mapRadios = new ToggleGroup();
         RadioButton earth = new RadioButton("Earth");
         RadioButton hellPortal = new RadioButton("Hell Portal");
-        earth.setSelected(true);
+        earth.setSelected(data1.earth);
         earth.setToggleGroup(mapRadios);
         hellPortal.setToggleGroup(mapRadios);
         hellPortal.setTranslateX(120);
+        hellPortal.setSelected(!data1.earth);
 
         ToggleGroup mapTypeRadios = new ToggleGroup();
         RadioButton forest = new RadioButton("Equatorial Forest");
         RadioButton corpses = new RadioButton("Toxic Corpses");
-        forest.setSelected(true);
+        forest.setSelected(data1.forest);
         forest.setToggleGroup(mapTypeRadios);
         corpses.setToggleGroup(mapTypeRadios);
         corpses.setTranslateX(58);
+        corpses.setSelected(!data1.forest);
 
         ToggleGroup mutationRadios = new ToggleGroup();
         RadioButton slight = new RadioButton("Slight gen mutations");
         RadioButton random = new RadioButton("Random gen mutations");
-        slight.setSelected(true);
+        slight.setSelected(data1.slight);
         slight.setToggleGroup(mutationRadios);
         random.setToggleGroup(mutationRadios);
         random.setTranslateX(38);
+        random.setSelected(!data1.slight);
 
         ToggleGroup behaviourRadios = new ToggleGroup();
         RadioButton following = new RadioButton("Animal follows its genome");
         RadioButton crazy = new RadioButton("Animal randomly choosing genes");
-        following.setSelected(true);
+        following.setSelected(data1.following);
         following.setToggleGroup(behaviourRadios);
         crazy.setToggleGroup(behaviourRadios);
         crazy.setTranslateX(8);
+        crazy.setSelected(!data1.following);
 
         ToggleGroup configRadios = new ToggleGroup();
         RadioButton radio1 = new RadioButton("1");
@@ -171,73 +183,73 @@ public class App extends Application {
             @Override
             public void changed(ObservableValue<? extends Toggle> observable, Toggle oldValue, Toggle newValue) {
                 if(configRadios.getSelectedToggle().equals(radio1)) {
-                    mapWidth.setText("dupa");
-                    mapHeight.setText("dupa");
-                    animalsNumber.setText("dupa");
-                    grassNumber.setText("dupa");
-                    dailyGrassGrowth.setText("dupa");
-                    startingEnergy.setText("dupa");
-                    moveEnergy.setText("dupa");
-                    eatEnergy.setText("dupa");
-                    reproductionEnergy.setText("dupa");
-                    minReproductionEnergy.setText("dupa");
-                    genLength.setText("dupa");
-                    minNumberOfMutations.setText("dupa");
-                    maxNumberOfMutations.setText("dupa");
-                    earth.setSelected(false);
-                    hellPortal.setSelected(true);
-                    forest.setSelected(true);
-                    corpses.setSelected(false);
-                    slight.setSelected(true);
-                    random.setSelected(false);
-                    following.setSelected(true);
-                    crazy.setSelected(false);
+                    mapWidth.setText(String.valueOf(data1.mapWidth));
+                    mapHeight.setText(String.valueOf(data1.mapHeight));
+                    animalsNumber.setText(String.valueOf(data1.animalNumber));
+                    grassNumber.setText(String.valueOf(data1.grassNumber));
+                    dailyGrassGrowth.setText(String.valueOf(data1.dailyGrassGrowth));
+                    startingEnergy.setText(String.valueOf(data1.startingEnergy));
+                    moveEnergy.setText(String.valueOf(data1.moveEnergy));
+                    eatEnergy.setText(String.valueOf(data1.eatEnergy));
+                    reproductionEnergy.setText(String.valueOf(data1.reproductionEnergy));
+                    minReproductionEnergy.setText(String.valueOf(data1.minReproductionEnergy));
+                    genLength.setText(String.valueOf(data1.genLength));
+                    minNumberOfMutations.setText(String.valueOf(data1.minNumberOfMutations));
+                    maxNumberOfMutations.setText(String.valueOf(data1.maxNumberOfMutations));
+                    earth.setSelected(data1.earth);
+                    hellPortal.setSelected(!data1.earth);
+                    forest.setSelected(data1.forest);
+                    corpses.setSelected(!data1.forest);
+                    slight.setSelected(data1.slight);
+                    random.setSelected(!data1.slight);
+                    following.setSelected(data1.following);
+                    crazy.setSelected(!data1.following);
                 }
                 else if(configRadios.getSelectedToggle().equals(radio2)) {
-                    mapWidth.setText("dupa");
-                    mapHeight.setText("dupa");
-                    animalsNumber.setText("dupa");
-                    grassNumber.setText("dupa");
-                    dailyGrassGrowth.setText("dupa");
-                    startingEnergy.setText("dupa");
-                    moveEnergy.setText("dupa");
-                    eatEnergy.setText("dupa");
-                    reproductionEnergy.setText("dupa");
-                    minReproductionEnergy.setText("dupa");
-                    genLength.setText("dupa");
-                    minNumberOfMutations.setText("dupa");
-                    maxNumberOfMutations.setText("dupa");
-                    earth.setSelected(false);
-                    hellPortal.setSelected(true);
-                    forest.setSelected(true);
-                    corpses.setSelected(false);
-                    slight.setSelected(true);
-                    random.setSelected(false);
-                    following.setSelected(true);
-                    crazy.setSelected(false);
+                    mapWidth.setText(String.valueOf(data2.mapWidth));
+                    mapHeight.setText(String.valueOf(data2.mapHeight));
+                    animalsNumber.setText(String.valueOf(data2.animalNumber));
+                    grassNumber.setText(String.valueOf(data2.grassNumber));
+                    dailyGrassGrowth.setText(String.valueOf(data2.dailyGrassGrowth));
+                    startingEnergy.setText(String.valueOf(data2.startingEnergy));
+                    moveEnergy.setText(String.valueOf(data2.moveEnergy));
+                    eatEnergy.setText(String.valueOf(data2.eatEnergy));
+                    reproductionEnergy.setText(String.valueOf(data2.reproductionEnergy));
+                    minReproductionEnergy.setText(String.valueOf(data2.minReproductionEnergy));
+                    genLength.setText(String.valueOf(data2.genLength));
+                    minNumberOfMutations.setText(String.valueOf(data2.minNumberOfMutations));
+                    maxNumberOfMutations.setText(String.valueOf(data2.maxNumberOfMutations));
+                    earth.setSelected(data2.earth);
+                    hellPortal.setSelected(!data2.earth);
+                    forest.setSelected(data2.forest);
+                    corpses.setSelected(!data2.forest);
+                    slight.setSelected(data2.slight);
+                    random.setSelected(!data2.slight);
+                    following.setSelected(data2.following);
+                    crazy.setSelected(!data2.following);
                 }
                 else if(configRadios.getSelectedToggle().equals(radio3)) {
-                    mapWidth.setText("dupa");
-                    mapHeight.setText("dupa");
-                    animalsNumber.setText("dupa");
-                    grassNumber.setText("dupa");
-                    dailyGrassGrowth.setText("dupa");
-                    startingEnergy.setText("dupa");
-                    moveEnergy.setText("dupa");
-                    eatEnergy.setText("dupa");
-                    reproductionEnergy.setText("dupa");
-                    minReproductionEnergy.setText("dupa");
-                    genLength.setText("dupa");
-                    minNumberOfMutations.setText("dupa");
-                    maxNumberOfMutations.setText("dupa");
-                    earth.setSelected(false);
-                    hellPortal.setSelected(true);
-                    forest.setSelected(true);
-                    corpses.setSelected(false);
-                    slight.setSelected(true);
-                    random.setSelected(false);
-                    following.setSelected(true);
-                    crazy.setSelected(false);
+                    mapWidth.setText(String.valueOf(data3.mapWidth));
+                    mapHeight.setText(String.valueOf(data3.mapHeight));
+                    animalsNumber.setText(String.valueOf(data3.animalNumber));
+                    grassNumber.setText(String.valueOf(data3.grassNumber));
+                    dailyGrassGrowth.setText(String.valueOf(data3.dailyGrassGrowth));
+                    startingEnergy.setText(String.valueOf(data3.startingEnergy));
+                    moveEnergy.setText(String.valueOf(data3.moveEnergy));
+                    eatEnergy.setText(String.valueOf(data3.eatEnergy));
+                    reproductionEnergy.setText(String.valueOf(data3.reproductionEnergy));
+                    minReproductionEnergy.setText(String.valueOf(data3.minReproductionEnergy));
+                    genLength.setText(String.valueOf(data3.genLength));
+                    minNumberOfMutations.setText(String.valueOf(data3.minNumberOfMutations));
+                    maxNumberOfMutations.setText(String.valueOf(data3.maxNumberOfMutations));
+                    earth.setSelected(data3.earth);
+                    hellPortal.setSelected(!data3.earth);
+                    forest.setSelected(data3.forest);
+                    corpses.setSelected(!data3.forest);
+                    slight.setSelected(data3.slight);
+                    random.setSelected(!data3.slight);
+                    following.setSelected(data3.following);
+                    crazy.setSelected(!data3.following);
                 }
             }
         });
