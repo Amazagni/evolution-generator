@@ -29,11 +29,6 @@ public class Simulation implements IAnimalMovementObserver{
     private EarthMap map;
     public Scene simulationScene;
     private VBox highlightedBox;
-    private Label genotypeLabel;
-    private Label currentGenLabel;
-    private Label energyCountLabel;
-    private Label grassEatenLabel;
-    private Label kidsLabel;
 
     private final XYChart.Series<Number, Number> animalsNumberChartSeries = new XYChart.Series<>();
     private final XYChart.Series<Number, Number> grassNumberChartSeries = new XYChart.Series<>();
@@ -43,6 +38,11 @@ public class Simulation implements IAnimalMovementObserver{
     private ArrayList<XYChart.Series<Number, Number>> chartSeriesArr;
     private Label dominant = new Label("None");
     private Label dominantCount = new Label("1");
+    private Label genotypeLabel = new Label("bagno");
+    private Label currentGenLabel = new Label("6");
+    private Label energyCountLabel = new Label("130");
+    private Label grassEatenLabel = new Label("23");
+    private Label kidsLabel = new Label("5");
     private boolean showEnergyIndicator = false;
     private boolean flagbuttons = false;
 
@@ -131,23 +131,18 @@ public class Simulation implements IAnimalMovementObserver{
 
         Label genotypeTitleLabel = new Label("Genotype: ");
 //        Label genotypeLabel = new Label(this.engine.highlightedAnimal.getGenes().toString());
-        this.genotypeLabel = new Label("bagno");
         HBox highlightedGenotype = new HBox(genotypeTitleLabel, this.genotypeLabel);
         Label currentGenTitleLabel = new Label("Currently activated gen: ");
 //        Label currentGenLabel = new Label(String.valueOf(this.engine.highlightedAnimal.getGen()));
-        this.currentGenLabel = new Label("6");
         HBox currentGen = new HBox(currentGenTitleLabel, this.currentGenLabel);
         Label energyCountTitleLabel = new Label("Current energy: ");
 //        Label energyCountLabel = new Label(String.valueOf(this.engine.highlightedAnimal.getEnergy()));
-        this.energyCountLabel = new Label("135");
         HBox energyCount = new HBox(energyCountTitleLabel, this.energyCountLabel);
         Label grassEatenTitleLabel = new Label("Number of eaten grass: ");
 //        Label grassEatenLabel = new Label(String.valueOf(this.engine.highlightedAnimal.getGrassEaten()));
-        this.grassEatenLabel = new Label("23");
         HBox grassEaten = new HBox(grassEatenTitleLabel, this.grassEatenLabel);
         Label kidsTitleLabel = new Label("Number of kids: ");
 //        Label kidsLabel = new Label(String.valueOf(this.engine.highlightedAnimal.getNumberOfChildren()));
-        this.kidsLabel = new Label("5");
 
         HBox kids = new HBox(kidsTitleLabel, this.kidsLabel);
 
@@ -225,11 +220,11 @@ public class Simulation implements IAnimalMovementObserver{
             drawMap(this.map, this.mapGridPane, true, false);
 
             if(this.engine.isHighlighted) {
-                this.genotypeLabel = new Label(this.engine.highlightedAnimal.getGenes().toString());
-                this.currentGenLabel = new Label(String.valueOf(this.engine.highlightedAnimal.getGen()));
-                this.energyCountLabel = new Label(String.valueOf(this.engine.highlightedAnimal.getEnergy()));
-                this.grassEatenLabel = new Label(String.valueOf(this.engine.highlightedAnimal.getGrassEaten()));
-                this.kidsLabel = new Label(String.valueOf(this.engine.highlightedAnimal.getNumberOfChildren()));
+                this.genotypeLabel.setText(this.engine.highlightedAnimal.getGenes().toString());
+                this.currentGenLabel.setText(String.valueOf(this.engine.highlightedAnimal.getGen()));
+                this.energyCountLabel.setText(String.valueOf(this.engine.highlightedAnimal.getEnergy()));
+                this.grassEatenLabel.setText(String.valueOf(this.engine.highlightedAnimal.getGrassEaten()));
+                this.kidsLabel.setText(String.valueOf(this.engine.highlightedAnimal.getNumberOfChildren()));
             }
 
 //            UPDATING CHARTS
