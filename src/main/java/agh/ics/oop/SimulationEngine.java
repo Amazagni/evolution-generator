@@ -227,6 +227,7 @@ public class SimulationEngine implements Runnable {
         }
         int id = 0;
         while(true){
+            if(currentNumberOfMutations == numberOfMutations)return childGenes;
             if(Math.random()<0.5 && !alreadyMutated[id]){
                 int tmpGene = childGenes.get(id);
                 //mutujemy gen
@@ -250,6 +251,7 @@ public class SimulationEngine implements Runnable {
                 id = id%genLength;
 
             }
+
         }
 
     }
