@@ -159,22 +159,40 @@ public class SimulationEngine implements Runnable {
     //drugą trzeba bedzie dopisać
     private void generateRandomGrass(int n){
         //generowanie dla mapy z rownikiem
-        //trawa rosnie tylko na wolnym polu (zapobiega to pojawianiu się nadmiernej ilości zwierząt)
         if(this.forestedEquators){
             int grassOnEquator = (int)(0.8*n);
-            //generuje trawe na rowniku
-            for(int i = 0; i < grassOnEquator; i++){
+            int index = 0;
+            int maxIterations = 0;
+            while (index < grassOnEquator){
                 int newX = (int)(Math.random()*(this.equatorUpperRight.x + 1));
                 int newY = (int)(Math.random()*(this.equatorUpperRight.y - this.equatorLowerLeft.y+1))+this.equatorLowerLeft.y;
                 Vector2d newPosition = new Vector2d(newX,newY);
-                if(!map.isOccupied(newPosition)){
-                    //klade tylko jesli jest wolne, nie szukam kolejnego wolnego miejsca, aby zapobiec przepelnieniu
+                if(!map.isGrassAt(newPosition)){
                     map.placeGrass(newPosition);
+                    index += 1;
+                }
+                maxIterations += 1;
+                //jesli losowaliśmy juz wiecej niz 100* grassOnEquator to breakujemy
+                if(maxIterations > grassOnEquator * 100){
+                    break;
                 }
             }
+            //nie znalezlismy wystarczajacej ilosci pol, sprawdzamy czy sa tam jeszcze jakies wolne
+            if(maxIterations > grassOnEquator * 100){
+                for(int i = equatorLowerLeft.x; i <= equatorUpperRight.x; i++){
+                    for(int j = equatorLowerLeft.y; j <= equatorLowerLeft.y; j++){
+                        if(!map.isGrassAt(new Vector2d(i,j))){
+                            map.placeGrass(new Vector2d(i,j));
+                            index += 1;
+                            if(index == grassOnEquator)break;
+                        }
+                    }
+                    if(index == grassOnEquator)break;
+                }
+            }
+            maxIterations = 0;
             //generuje trawę poza równikiem
-            for(int i = grassOnEquator; i < n; i ++){
-                //losuje ponad równikiem
+            while(index < n){
                 int newX = (int)(Math.random()*(this.equatorUpperRight.x + 1));
                 int newY;
                 if(Math.random()<0.5){
@@ -184,11 +202,30 @@ public class SimulationEngine implements Runnable {
                     newY = (int)(Math.random()*(this.map.getUpperRight().y - this.equatorUpperRight.y + 1))+this.equatorUpperRight.y;
                 }
                 Vector2d newPosition = new Vector2d(newX,newY);
-                if(!this.map.isOccupied(newPosition)){
-                    this.map.placeGrass(newPosition);
+                if(!this.map.isGrassAt(newPosition)){
+                    map.placeGrass(newPosition);
+                    index += 1;
+                    if(index == n)break;
                 }
+                maxIterations += 1;
+                if(maxIterations > 100 * n){
+                    break;
+                }}
+            Vector2d newPosition;
+            if(index < n){
+                for(int i = 0; i < equatorUpperRight.x; i++){
+                    for(int j = 0; j < equatorUpperRight.y;j++){
+                        newPosition = new Vector2d(i,j);
+                        if(!map.isGrassAt(newPosition)){
+                            map.placeGrass(newPosition);
+                            index += 1;
+                            if(index == n)return;
+                        }
 
+                    }
+                }
             }
+
         }
         if(this.toxicCorpses){
             //corpses to tablica posortowana po ilosci trupow (rosnąco)
@@ -196,20 +233,40 @@ public class SimulationEngine implements Runnable {
             int grassOnBetterFields = (int)(0.8 * n);
             int betterFields = (int)(0.2 * this.corpses.size());
             this.corpses.sort(new ToxicCorpsesComparator());
-            for(int i = 0; i < grassOnBetterFields; i++){
+            int index = 0;
+            int maxIterations = 0;
+            while(index < grassOnBetterFields){
                 int betterFieldId = (int)(Math.random()*(betterFields));
-                if(!this.map.isOccupied(this.corpses.get(betterFieldId).getPosition())){
+                if(!this.map.isGrassAt(this.corpses.get(betterFieldId).getPosition())){
                     this.map.placeGrass(this.corpses.get(betterFieldId).getPosition());
+                    index += 1;
                 }
+                maxIterations += 1;
+                if(maxIterations > grassOnBetterFields * 100)break;
             }
-            for(int i = grassOnBetterFields; i < n; i++){
+            maxIterations = 0;
+            while(index < n){
                 int worseFieldId = (int)(Math.random()*(this.corpses.size()-betterFields)+betterFields);
-                if(!this.map.isOccupied(this.corpses.get(worseFieldId).getPosition())){
+                if(!this.map.isGrassAt(this.corpses.get(worseFieldId).getPosition())){
                     this.map.placeGrass(this.corpses.get(worseFieldId).getPosition());
+                    index += 1;
+                }
+                maxIterations += 1;
+                if(maxIterations > n * 100)break;
+            }
+            if(index < n){
+                for(int i = 0; i < corpses.size(); i++){
+                    if(!this.map.isGrassAt(corpses.get(i).getPosition())){
+                        this.map.placeGrass(corpses.get(i).getPosition());
+                        index += 1;
+                        if(index == n)return;
+                    }
                 }
             }
+
         }
     }
+
 
     private ArrayList<Integer> CreateChildGenes(Animal firstParent, Animal secondParent){
         int genesFromFirstParent = (int)(this.genLength *
