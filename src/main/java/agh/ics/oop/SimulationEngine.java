@@ -472,7 +472,8 @@ public class SimulationEngine implements Runnable {
                                     (firstParent.getEnergy()/(double)(firstParent.getEnergy()+secondParent.getEnergy())));
                             firstParent.updateEnergy(-firstParentEnergyLoss);
                             secondParent.updateEnergy(-(this.energyUsedToCreateAnimal - firstParentEnergyLoss));
-
+                            firstParent.icrementNumberOfChildren();
+                            secondParent.icrementNumberOfChildren();
                             //dodajemy nowe zwierze
                             Animal child = new Animal(position,childGenes,this.energyUsedToCreateAnimal, genLength);
                             animalList.add(child);

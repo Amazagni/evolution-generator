@@ -15,6 +15,7 @@ import javafx.scene.control.ProgressBar;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.scene.shape.Circle;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 import java.io.FileInputStream;
@@ -43,6 +44,8 @@ public class Simulation implements IAnimalMovementObserver{
     private Label energyCountLabel = new Label("130");
     private Label grassEatenLabel = new Label("23");
     private Label kidsLabel = new Label("5");
+    private Label daysLivedTitleLabel = new Label("Days lived: ");
+    private Label daysLivedLabel = new Label("6");
     private boolean showEnergyIndicator = false;
     private boolean flagbuttons = false;
 
@@ -129,25 +132,24 @@ public class Simulation implements IAnimalMovementObserver{
 
 //        HIGHLIGHTED ANIMAL
 
+        Label highlightedTitle = new Label("Individual statistics: ");
+        highlightedTitle.setFont(new Font(25));
         Label genotypeTitleLabel = new Label("Genotype: ");
-//        Label genotypeLabel = new Label(this.engine.highlightedAnimal.getGenes().toString());
         HBox highlightedGenotype = new HBox(genotypeTitleLabel, this.genotypeLabel);
         Label currentGenTitleLabel = new Label("Currently activated gen: ");
-//        Label currentGenLabel = new Label(String.valueOf(this.engine.highlightedAnimal.getGen()));
         HBox currentGen = new HBox(currentGenTitleLabel, this.currentGenLabel);
         Label energyCountTitleLabel = new Label("Current energy: ");
-//        Label energyCountLabel = new Label(String.valueOf(this.engine.highlightedAnimal.getEnergy()));
         HBox energyCount = new HBox(energyCountTitleLabel, this.energyCountLabel);
         Label grassEatenTitleLabel = new Label("Number of eaten grass: ");
-//        Label grassEatenLabel = new Label(String.valueOf(this.engine.highlightedAnimal.getGrassEaten()));
         HBox grassEaten = new HBox(grassEatenTitleLabel, this.grassEatenLabel);
         Label kidsTitleLabel = new Label("Number of kids: ");
-//        Label kidsLabel = new Label(String.valueOf(this.engine.highlightedAnimal.getNumberOfChildren()));
+        HBox daysLived = new HBox(this.daysLivedTitleLabel, this.daysLivedLabel);
 
         HBox kids = new HBox(kidsTitleLabel, this.kidsLabel);
 
-//        VBox highlighted = new VBox(highlightedGenotype, currentGen, energyCount, grassEaten, kids);
-        this.highlightedBox = new VBox(highlightedGenotype, currentGen, energyCount, grassEaten, kids);
+        this.highlightedBox = new VBox(highlightedTitle, highlightedGenotype, currentGen, energyCount, grassEaten, kids, daysLived);
+        this.highlightedBox.setPadding(new Insets(50, 0, 0, 0));
+        this.highlightedBox.setVisible(false);
 
         Button startSimulationButton = new Button("Resume simulation");
         Button stopSimulationButton = new Button("Pause simulation");
@@ -220,11 +222,20 @@ public class Simulation implements IAnimalMovementObserver{
             drawMap(this.map, this.mapGridPane, true, false);
 
             if(this.engine.isHighlighted) {
+                this.highlightedBox.setVisible(true);
                 this.genotypeLabel.setText(this.engine.highlightedAnimal.getGenes().toString());
                 this.currentGenLabel.setText(String.valueOf(this.engine.highlightedAnimal.getGen()));
                 this.energyCountLabel.setText(String.valueOf(this.engine.highlightedAnimal.getEnergy()));
                 this.grassEatenLabel.setText(String.valueOf(this.engine.highlightedAnimal.getGrassEaten()));
                 this.kidsLabel.setText(String.valueOf(this.engine.highlightedAnimal.getNumberOfChildren()));
+                if("-1".equals(String.valueOf(this.engine.highlightedAnimal.getDiedAt()))) {
+                    this.daysLivedTitleLabel.setText("Days lived: ");
+                    this.daysLivedLabel.setText(String.valueOf(this.engine.highlightedAnimal.getAge()));
+                }
+                else {
+                    this.daysLivedTitleLabel.setText("Died on day: ");
+                    this.daysLivedLabel.setText(String.valueOf(this.engine.highlightedAnimal.getDiedAt()));
+                }
             }
 
 //            UPDATING CHARTS
