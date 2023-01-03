@@ -226,6 +226,7 @@ public class Simulation implements IAnimalMovementObserver{
             public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
                 if(dominantCheckbox.isSelected()) engine.showAnimalsWithDominantGenotype = true;
                 else engine.showAnimalsWithDominantGenotype = false;
+                drawMap(map, mapGridPane, true, false);
             }
         });
     }
