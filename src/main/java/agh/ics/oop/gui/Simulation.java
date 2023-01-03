@@ -47,6 +47,8 @@ public class Simulation implements IAnimalMovementObserver{
     private Label energyCountLabel = new Label("130");
     private Label grassEatenLabel = new Label("23");
     private Label kidsLabel = new Label("5");
+    private Label bornOnDayTitleLabel = new Label("Born on day: ");
+    private Label bornOnDayLabel = new Label("5");
     private Label daysLivedTitleLabel = new Label("Days lived: ");
     private Label daysLivedLabel = new Label("6");
     private boolean showEnergyIndicator = false;
@@ -152,10 +154,11 @@ public class Simulation implements IAnimalMovementObserver{
         HBox grassEaten = new HBox(grassEatenTitleLabel, this.grassEatenLabel);
         Label kidsTitleLabel = new Label("Number of kids: ");
         HBox daysLived = new HBox(this.daysLivedTitleLabel, this.daysLivedLabel);
+        HBox bornOn = new HBox(this.bornOnDayTitleLabel, this.bornOnDayLabel);
 
         HBox kids = new HBox(kidsTitleLabel, this.kidsLabel);
 
-        this.highlightedBox = new VBox(highlightedTitle, highlightedGenotype, currentGen, energyCount, grassEaten, kids, daysLived);
+        this.highlightedBox = new VBox(highlightedTitle, highlightedGenotype, currentGen, energyCount, grassEaten, kids, bornOn, daysLived);
         this.highlightedBox.setPadding(new Insets(50, 0, 0, 0));
         this.highlightedBox.setVisible(false);
 
@@ -244,10 +247,13 @@ public class Simulation implements IAnimalMovementObserver{
                 if("-1".equals(String.valueOf(this.engine.highlightedAnimal.getDiedAt()))) {
                     this.daysLivedTitleLabel.setText("Days lived: ");
                     this.daysLivedLabel.setText(String.valueOf(this.engine.highlightedAnimal.getAge()));
+                    this.bornOnDayLabel.setText(String.valueOf(this.engine.getCurrentDayCount() - this.engine.highlightedAnimal.getAge()));
                 }
                 else {
                     this.daysLivedTitleLabel.setText("Died on day: ");
                     this.daysLivedLabel.setText(String.valueOf(this.engine.highlightedAnimal.getDiedAt()));
+                    this.bornOnDayLabel.setText(String.valueOf(this.engine.highlightedAnimal.getDiedAt() - this.engine.highlightedAnimal.getAge()));
+
                 }
             }
 

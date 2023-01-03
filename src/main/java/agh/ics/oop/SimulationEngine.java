@@ -342,6 +342,7 @@ public class SimulationEngine implements Runnable {
     public ArrayList<Integer> getMostCommonGenotype() { return this.mostPopularGenotype; }
 
     public int getMostPopularGenotypeCount() { return this.mostPopularGenotypeCount; }
+    public int getDailyEnergyLoss() { return this.dailyEnergyLoss; }
 
     public void Start(){ this.isRunning = true; }
     public void Stop(){

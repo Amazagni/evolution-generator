@@ -64,7 +64,6 @@ public class CreateStats {
         data.add(geneString);
         for(int i = 0; i < data.size(); i++){
             this.writer.write(data.get(i));
-            System.out.println("dupa");
         }
         this.writer.write("\n");
     }

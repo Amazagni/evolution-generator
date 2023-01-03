@@ -64,7 +64,11 @@ public class GUIElement {
                 engine.highlightedAnimal = (Animal) gameElement;
                 engine.isHighlighted = true;
             });
-            indicator.setFill(Color.rgb(Math.min(((Animal) gameElement).getEnergy() * 255/10*engine.getGrassEnergyGain(), 255), 0, 0));
+            indicator.setFill(Color.rgb( 255, 0, 0));
+            if(((Animal) gameElement).getEnergy() > 5 * engine.getDailyEnergyLoss()) indicator.setFill(Color.rgb( 255, 120, 0));
+            if(((Animal) gameElement).getEnergy() > 10 * engine.getDailyEnergyLoss()) indicator.setFill(Color.rgb( 255, 255, 0));
+            if(((Animal) gameElement).getEnergy() > 20 * engine.getDailyEnergyLoss()) indicator.setFill(Color.rgb( 120, 255, 0));
+
             indicator.setTranslateX(0.4 * tileSize);
             indicator.setTranslateY(-0.4 * tileSize);
             // rotating the animal depending on its direction
