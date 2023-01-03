@@ -62,7 +62,7 @@ public class GUIElement {
 //            button.setVisible(false);
             button.setOnAction(event -> {
                 engine.highlightedAnimal = (Animal) gameElement;
-//                gameElementImage.setEffect(new ColorAdjust(100, 100, 0, 0));
+                gameElementImage.setEffect(new ColorAdjust(100, 100, 0, 0));
                 engine.isHighlighted = true;
             });
             indicator.setFill(Color.rgb( 255, 0, 0));
